@@ -1,2015 +1,878 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Puru Raj Dhama — CS · Cloud · AI</title>
-  <meta name="description"
-    content="Portfolio of Puru Raj Dhama — Final Year CS student at Bennett University specialising in Cloud Computing and AI.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@300;400;500&display=swap"
-    rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <style>
-    *,
-    *::before,
-    *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box
-    }
-
-    :root {
-      --bg: #f0ece6;
-      --bg2: #e8e2da;
-      --bg3: #ddd6cc;
-      --surface: #fff;
-      --border: rgba(0, 0, 0, .07);
-      --border2: rgba(0, 0, 0, .13);
-      --text: #111;
-      --text2: #484848;
-      --text3: #888;
-      --accent: #e85d04;
-      --tag-bg: rgba(14, 14, 14, .055);
-      --nav-bg: rgba(240, 236, 230, .92);
-      --lc-empty: #e2ddd6;
-      --lc1: #b7e4c7;
-      --lc2: #74c69d;
-      --lc3: #40916c;
-      --lc4: #1b4332;
-      --tr: .38s cubic-bezier(.4, 0, .2, 1);
-    }
-
-    [data-theme="dark"] {
-      --bg: #070b12;
-      --bg2: #0c1120;
-      --bg3: #101827;
-      --surface: #121a2c;
-      --border: rgba(255, 255, 255, .07);
-      --border2: rgba(255, 255, 255, .13);
-      --text: #eceff8;
-      --text2: #97a0b6;
-      --text3: #525c76;
-      --accent: #00c8ff;
-      --tag-bg: rgba(255, 255, 255, .055);
-      --nav-bg: rgba(7, 11, 18, .94);
-      --lc-empty: #131b2c;
-      --lc1: #0d3320;
-      --lc2: #1a6640;
-      --lc3: #2a9960;
-      --lc4: #3ecc78;
-    }
-
-    html {
-      scroll-behavior: smooth
-    }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      background: var(--bg);
-      color: var(--text);
-      transition: background var(--tr), color var(--tr);
-      overflow-x: hidden
-    }
-
-    /* ── NAV ── */
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 200;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 48px;
-      height: 58px;
-      background: var(--nav-bg);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      transition: background var(--tr), border-color var(--tr)
-    }
-
-    .nav-logo {
-      font-family: 'DM Mono', monospace;
-      font-size: 13px;
-      font-weight: 400;
-      letter-spacing: .04em;
-      color: var(--text);
-      text-decoration: none
-    }
-
-    .nav-logo span {
-      color: var(--accent)
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 28px;
-      list-style: none;
-      align-items: center
-    }
-
-    .nav-links a {
-      font-size: 11.5px;
-      letter-spacing: .06em;
-      color: var(--text3);
-      text-decoration: none;
-      transition: color .2s;
-      font-weight: 400
-    }
-
-    .nav-links a:hover,
-    .nav-links a.active {
-      color: var(--text)
-    }
-
-    .theme-btn {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--text3);
-      cursor: pointer;
-      background: none;
-      border: 1px solid var(--border2);
-      border-radius: 4px;
-      padding: 5px 10px;
-      transition: color .2s, border-color .2s
-    }
-
-    .theme-btn:hover {
-      color: var(--text);
-      border-color: var(--accent)
-    }
-
-    /* ── HERO ── */
-    #hero {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      min-height: 640px;
-      overflow: hidden
-    }
-
-    #hero-canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      display: block;
-      z-index: 0
-    }
-
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-      transition: background var(--tr)
-    }
-
-    [data-theme="light"] .hero-overlay {
-      background: linear-gradient(to right, rgba(240, 236, 230, .54) 0%, rgba(240, 236, 230, .16) 55%, transparent 100%)
-    }
-
-    [data-theme="dark"] .hero-overlay {
-      background: linear-gradient(to right, rgba(7, 11, 18, .68) 0%, rgba(7, 11, 18, .22) 55%, transparent 100%)
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 3;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 0 80px;
-      max-width: 860px
-    }
-
-    .hero-eyebrow {
-      font-family: 'DM Mono', monospace;
-      font-size: 10.5px;
-      letter-spacing: .24em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 22px;
-      opacity: 0;
-      animation: aUp .8s ease forwards .3s
-    }
-
-    .hero-name {
-      font-size: clamp(50px, 7vw, 96px);
-      font-weight: 300;
-      line-height: 1.02;
-      letter-spacing: -.03em;
-      color: var(--text);
-      margin-bottom: 14px;
-      opacity: 0;
-      animation: aUp .9s ease forwards .5s
-    }
-
-    .hero-name strong {
-      font-weight: 500
-    }
-
-    .hero-role {
-      font-size: clamp(15px, 2vw, 21px);
-      font-weight: 300;
-      color: var(--text2);
-      letter-spacing: -.01em;
-      margin-bottom: 38px;
-      line-height: 1.6;
-      opacity: 0;
-      animation: aUp .8s ease forwards .72s
-    }
-
-    .hero-role em {
-      color: var(--accent);
-      font-style: normal
-    }
-
-    .hero-cta {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      opacity: 0;
-      animation: aUp .8s ease forwards .95s
-    }
-
-    .btn {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      letter-spacing: .08em;
-      font-weight: 400;
-      padding: 11px 26px;
-      border-radius: 3px;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-      transition: transform .18s, box-shadow .18s, background .2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 7px
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #fff
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 22px rgba(232, 93, 4, .28)
-    }
-
-    [data-theme="dark"] .btn-primary:hover {
-      box-shadow: 0 8px 22px rgba(0, 200, 255, .22)
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border2)
-    }
-
-    .btn-ghost:hover {
-      transform: translateY(-2px);
-      background: var(--surface)
-    }
-
-    .hero-scroll {
-      position: absolute;
-      bottom: 32px;
-      left: 80px;
-      z-index: 3;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      opacity: 0;
-      animation: aIn 1s ease forwards 1.8s
-    }
-
-    .hero-scroll span {
-      font-family: 'DM Mono', monospace;
-      font-size: 9.5px;
-      letter-spacing: .2em;
-      color: var(--text3)
-    }
-
-    .scroll-bar {
-      width: 38px;
-      height: 1px;
-      background: linear-gradient(90deg, var(--accent), transparent)
-    }
-
-    /* ── ROBOTS ── */
-    .rb {
-      position: absolute;
-      z-index: 4;
-      pointer-events: none;
-      opacity: 0
-    }
-
-    #rb1 {
-      right: 10%;
-      bottom: 13%
-    }
-
-    #rb1 svg {
-      width: 110px;
-      height: auto;
-      filter: drop-shadow(0 12px 28px rgba(0, 0, 0, .13));
-      transition: filter .4s
-    }
-
-    [data-theme="dark"] #rb1 svg {
-      filter: drop-shadow(0 0 22px rgba(0, 200, 255, .42)) drop-shadow(0 10px 24px rgba(0, 0, 0, .65))
-    }
-
-    #rb2 {
-      right: 27%;
-      bottom: 23%
-    }
-
-    #rb2 svg {
-      width: 68px;
-      height: auto;
-      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .11));
-      transition: filter .4s
-    }
-
-    [data-theme="dark"] #rb2 svg {
-      filter: drop-shadow(0 0 15px rgba(255, 170, 40, .38)) drop-shadow(0 8px 14px rgba(0, 0, 0, .58))
-    }
-
-    #rb3 {
-      right: 5%;
-      bottom: 45%
-    }
-
-    #rb3 svg {
-      width: 48px;
-      height: auto;
-      filter: drop-shadow(0 5px 12px rgba(0, 0, 0, .10));
-      transition: filter .4s
-    }
-
-    [data-theme="dark"] #rb3 svg {
-      filter: drop-shadow(0 0 13px rgba(80, 210, 140, .44)) drop-shadow(0 4px 10px rgba(0, 0, 0, .52))
-    }
-
-    #rb1 {
-      animation-name: rbIn, rbF1;
-      animation-duration: .85s, 8s;
-      animation-timing-function: ease, ease-in-out;
-      animation-fill-mode: forwards, none;
-      animation-iteration-count: 1, infinite;
-      animation-delay: 1.1s, 1.95s
-    }
-
-    #rb2 {
-      animation-name: rbIn, rbF2;
-      animation-duration: .85s, 10s;
-      animation-timing-function: ease, ease-in-out;
-      animation-fill-mode: forwards, none;
-      animation-iteration-count: 1, infinite;
-      animation-delay: 1.75s, 2.6s
-    }
-
-    #rb3 {
-      animation-name: rbIn, rbF3;
-      animation-duration: .85s, 12s;
-      animation-timing-function: ease, ease-in-out;
-      animation-fill-mode: forwards, none;
-      animation-iteration-count: 1, infinite;
-      animation-delay: 2.35s, 3.2s
-    }
-
-    @keyframes rbIn {
-      from {
-        opacity: 0;
-        transform: translateY(30px)
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0)
-      }
-    }
-
-    @keyframes rbF1 {
-
-      0%,
-      100% {
-        transform: translateY(0) rotate(-1.5deg)
-      }
-
-      35% {
-        transform: translateY(-22px) rotate(1.5deg)
-      }
-
-      70% {
-        transform: translateY(-9px) rotate(-.8deg)
-      }
-    }
-
-    @keyframes rbF2 {
-
-      0%,
-      100% {
-        transform: translateY(0) rotate(2deg)
-      }
-
-      38% {
-        transform: translateY(-18px) rotate(-2deg)
-      }
-
-      72% {
-        transform: translateY(-7px) rotate(1.2deg)
-      }
-    }
-
-    @keyframes rbF3 {
-
-      0%,
-      100% {
-        transform: translateY(0) rotate(-2.5deg)
-      }
-
-      33% {
-        transform: translateY(-14px) rotate(3.5deg)
-      }
-
-      66% {
-        transform: translateY(-5px) rotate(-1.5deg)
-      }
-    }
-
-    /* ── DIVIDER ── */
-    .divider {
-      width: 100%;
-      height: 1px;
-      background: var(--border)
-    }
-
-    /* ── SECTIONS ── */
-    section.wrap {
-      padding: 96px 80px;
-      max-width: 1200px;
-      margin: 0 auto
-    }
-
-    .sec-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 9.5px;
-      letter-spacing: .28em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 14px
-    }
-
-    .sec-label::before {
-      content: attr(data-n);
-      color: var(--text3);
-      font-size: 9px
-    }
-
-    .sec-title {
-      font-size: clamp(28px, 4vw, 48px);
-      font-weight: 300;
-      letter-spacing: -.02em;
-      line-height: 1.1;
-      color: var(--text);
-      margin-bottom: 52px
-    }
-
-    .sec-title strong {
-      font-weight: 500
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(22px);
-      transition: opacity .7s ease, transform .7s ease
-    }
-
-    .reveal.in {
-      opacity: 1;
-      transform: none
-    }
-
-    /* ── ABOUT ── */
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.65fr;
-      gap: 72px;
-      align-items: start
-    }
-
-    .photo-box {
-      position: relative;
-      aspect-ratio: 3/4;
-      background: var(--bg3);
-      border-radius: 3px;
-      border: 1px solid var(--border);
-      overflow: hidden;
-      color: var(--text3)
-    }
-
-    .photo-box img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block
-    }
-
-    .photo-box .photo-fallback {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      padding: 24px;
-      text-align: center;
-      background: linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(0, 0, 0, .06))
-    }
-
-    .photo-box svg {
-      width: 32px;
-      height: 32px;
-      opacity: .35
-    }
-
-    .photo-box span {
-      font-family: 'DM Mono', monospace;
-      font-size: 9.5px;
-      letter-spacing: .15em
-    }
-
-    .about-bio {
-      font-size: 16px;
-      line-height: 1.8;
-      color: var(--text2);
-      margin-bottom: 28px
-    }
-
-    .about-bio strong {
-      color: var(--text);
-      font-weight: 500
-    }
-
-    .stat-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      overflow: hidden;
-      margin-bottom: 28px
-    }
-
-    .stat-cell {
-      background: var(--surface);
-      padding: 18px 14px;
-      text-align: center
-    }
-
-    .stat-n {
-      font-size: 26px;
-      font-weight: 500;
-      letter-spacing: -.03em;
-      color: var(--text);
-      line-height: 1;
-      margin-bottom: 4px
-    }
-
-    .stat-l {
-      font-family: 'DM Mono', monospace;
-      font-size: 8.5px;
-      letter-spacing: .16em;
-      color: var(--text3);
-      text-transform: uppercase
-    }
-
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px
-    }
-
-    .tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 10.5px;
-      letter-spacing: .04em;
-      padding: 5px 11px;
-      border-radius: 2px;
-      background: var(--tag-bg);
-      color: var(--text2);
-      border: 1px solid var(--border);
-      transition: border-color .2s, color .2s, background .2s
-    }
-
-    .tag:hover,
-    .tag.hi {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: rgba(232, 93, 4, .07)
-    }
-
-    [data-theme="dark"] .tag.hi {
-      background: rgba(0, 200, 255, .07)
-    }
-
-    /* ── TIMELINE ── */
-    .exp-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 56px 72px
-    }
-
-    .exp-grid-single {
-      grid-template-columns: 1fr;
-      max-width: 860px
-    }
-
-    .col-head {
-      font-family: 'DM Mono', monospace;
-      font-size: 9.5px;
-      letter-spacing: .2em;
-      text-transform: uppercase;
-      color: var(--text3);
-      margin-bottom: 28px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border)
-    }
-
-    .tl {
-      position: relative;
-      padding-left: 24px
-    }
-
-    .tl::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 6px;
-      bottom: 0;
-      width: 1px;
-      background: var(--border2)
-    }
-
-    .tl-item {
-      position: relative;
-      margin-bottom: 40px
-    }
-
-    .tl-item::before {
-      content: '';
-      position: absolute;
-      left: -28px;
-      top: 5px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--surface);
-      border: 2px solid var(--accent);
-      transition: background .2s
-    }
-
-    .tl-item:hover::before {
-      background: var(--accent)
-    }
-
-    .tl-date {
-      font-family: 'DM Mono', monospace;
-      font-size: 9.5px;
-      letter-spacing: .14em;
-      color: var(--text3);
-      margin-bottom: 5px
-    }
-
-    .tl-title {
-      font-size: 16px;
-      font-weight: 500;
-      color: var(--text);
-      letter-spacing: -.01em;
-      margin-bottom: 3px
-    }
-
-    .tl-org {
-      font-size: 12.5px;
-      color: var(--accent);
-      margin-bottom: 8px
-    }
-
-    .tl-desc {
-      font-size: 13px;
-      line-height: 1.72;
-      color: var(--text2)
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-top: 9px
-    }
-
-    .chip {
-      font-family: 'DM Mono', monospace;
-      font-size: 9.5px;
-      padding: 2px 7px;
-      border-radius: 2px;
-      background: var(--tag-bg);
-      color: var(--text3);
-      border: 1px solid var(--border)
-    }
-
-    /* ── PROJECTS ── */
-    .proj-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      overflow: hidden
-    }
-
-    .proj-card {
-      background: var(--surface);
-      padding: 30px;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: background .2s
-    }
-
-    .proj-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 2.5px;
-      height: 0;
-      background: var(--accent);
-      transition: height .24s ease
-    }
-
-    .proj-card:hover::before {
-      height: 100%
-    }
-
-    .proj-card:hover {
-      background: var(--bg2)
-    }
-
-    .proj-n {
-      font-family: 'DM Mono', monospace;
-      font-size: 8.5px;
-      letter-spacing: .2em;
-      color: var(--text3);
-      margin-bottom: 14px
-    }
-
-    .proj-title {
-      font-size: 17px;
-      font-weight: 500;
-      letter-spacing: -.02em;
-      color: var(--text);
-      margin-bottom: 9px;
-      line-height: 1.2
-    }
-
-    .proj-desc {
-      font-size: 12.5px;
-      line-height: 1.72;
-      color: var(--text2);
-      margin-bottom: 18px
-    }
-
-    .proj-links {
-      display: flex;
-      gap: 14px
-    }
-
-    .proj-link {
-      font-family: 'DM Mono', monospace;
-      font-size: 9.5px;
-      letter-spacing: .1em;
-      color: var(--accent);
-      text-decoration: none;
-      transition: opacity .2s
-    }
-
-    .proj-link:hover {
-      opacity: .65
-    }
-
-    /* ── ACHIEVEMENTS ── */
-    .ach-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
-      gap: 14px
-    }
-
-    .ach-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      padding: 22px;
-      transition: border-color .2s, transform .2s;
-      position: relative
-    }
-
-    .ach-card:hover {
-      border-color: var(--border2);
-      transform: translateY(-2px)
-    }
-
-    .ach-ico {
-      width: 34px;
-      height: 34px;
-      border-radius: 3px;
-      background: rgba(232, 93, 4, .07);
-      border: 1px solid rgba(232, 93, 4, .2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 12px
-    }
-
-    [data-theme="dark"] .ach-ico {
-      background: rgba(0, 200, 255, .07);
-      border-color: rgba(0, 200, 255, .2)
-    }
-
-    .ach-ico svg {
-      width: 15px;
-      height: 15px;
-      color: var(--accent)
-    }
-
-    .ach-title {
-      font-size: 13.5px;
-      font-weight: 500;
-      color: var(--text);
-      margin-bottom: 5px;
-      letter-spacing: -.01em
-    }
-
-    .ach-desc {
-      font-size: 11.5px;
-      line-height: 1.62;
-      color: var(--text3)
-    }
-
-    .ach-yr {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      font-family: 'DM Mono', monospace;
-      font-size: 8.5px;
-      padding: 2px 6px;
-      border-radius: 2px;
-      background: var(--tag-bg);
-      color: var(--text3);
-      border: 1px solid var(--border)
-    }
-
-    /* ── LEETCODE ── */
-    .lc-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      overflow: hidden
-    }
-
-    .lc-head {
-      padding: 22px 26px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 14px
-    }
-
-    .lc-user {
-      display: flex;
-      align-items: center;
-      gap: 12px
-    }
-
-    .lc-av {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--bg3);
-      border: 1px solid var(--border2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text2)
-    }
-
-    .lc-uname {
-      font-family: 'DM Mono', monospace;
-      font-size: 12.5px;
-      color: var(--text)
-    }
-
-    .lc-rank {
-      font-size: 11px;
-      color: var(--text3);
-      margin-top: 2px
-    }
-
-    .lc-stats {
-      display: flex;
-      gap: 22px;
-      flex-wrap: wrap;
-      align-items: center
-    }
-
-    .lc-s {
-      text-align: center
-    }
-
-    .lc-sn {
-      font-size: 22px;
-      font-weight: 500;
-      letter-spacing: -.03em;
-      color: var(--text);
-      line-height: 1
-    }
-
-    .lc-sl {
-      font-family: 'DM Mono', monospace;
-      font-size: 8.5px;
-      letter-spacing: .14em;
-      color: var(--text3);
-      text-transform: uppercase;
-      margin-top: 3px
-    }
-
-    .lc-sn.easy {
-      color: #2d6a4f
-    }
-
-    [data-theme="dark"] .lc-sn.easy {
-      color: #52b788
-    }
-
-    .lc-sn.med {
-      color: #c17d0a
-    }
-
-    [data-theme="dark"] .lc-sn.med {
-      color: #f4a224
-    }
-
-    .lc-sn.hard {
-      color: #b91c1c
-    }
-
-    [data-theme="dark"] .lc-sn.hard {
-      color: #f87171
-    }
-
-    .lc-loading {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--text3);
-      letter-spacing: .08em;
-      padding: 4px 0
-    }
-
-    .lc-body {
-      padding: 26px
-    }
-
-    .lc-sub-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 9.5px;
-      letter-spacing: .14em;
-      color: var(--text3);
-      margin-bottom: 10px
-    }
-
-    .lc-grid {
-      display: grid;
-      grid-template-columns: repeat(53, 1fr);
-      gap: 2.5px
-    }
-
-    .lc-cell {
-      aspect-ratio: 1;
-      border-radius: 2px;
-      background: var(--lc-empty);
-      transition: transform .15s;
-      cursor: default;
-      position: relative
-    }
-
-    .lc-cell:hover {
-      transform: scale(1.6);
-      z-index: 2
-    }
-
-    .lc-cell.l1 {
-      background: var(--lc1)
-    }
-
-    .lc-cell.l2 {
-      background: var(--lc2)
-    }
-
-    .lc-cell.l3 {
-      background: var(--lc3)
-    }
-
-    .lc-cell.l4 {
-      background: var(--lc4)
-    }
-
-    .lc-legend {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      margin-top: 10px;
-      justify-content: flex-end
-    }
-
-    .lc-legend span {
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      color: var(--text3)
-    }
-
-    .lc-leg-cell {
-      width: 10px;
-      height: 10px;
-      border-radius: 2px
-    }
-
-    .lc-profile-link {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: .08em;
-      color: var(--accent);
-      text-decoration: none;
-      transition: opacity .2s
-    }
-
-    .lc-profile-link:hover {
-      opacity: .7
-    }
-
-    /* ── CONTACT ── */
-    .contact-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.45fr;
-      gap: 72px;
-      align-items: start
-    }
-
-    .contact-head {
-      font-size: clamp(26px, 3.8vw, 42px);
-      font-weight: 300;
-      letter-spacing: -.02em;
-      line-height: 1.2;
-      color: var(--text);
-      margin-bottom: 16px
-    }
-
-    .contact-head strong {
-      font-weight: 500
-    }
-
-    .contact-sub {
-      font-size: 13.5px;
-      line-height: 1.78;
-      color: var(--text2);
-      margin-bottom: 28px
-    }
-
-    .clinks {
-      display: flex;
-      flex-direction: column;
-      gap: 10px
-    }
-
-    .clink {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 12.5px;
-      color: var(--text2);
-      text-decoration: none;
-      transition: color .2s
-    }
-
-    .clink:hover {
-      color: var(--accent)
-    }
-
-    .clink-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 3px;
-      background: var(--tag-bg);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: border-color .2s, background .2s
-    }
-
-    .clink:hover .clink-icon {
-      border-color: var(--accent);
-      background: rgba(232, 93, 4, .06)
-    }
-
-    [data-theme="dark"] .clink:hover .clink-icon {
-      background: rgba(0, 200, 255, .06)
-    }
-
-    .clink-icon svg {
-      width: 14px;
-      height: 14px
-    }
-
-    .form-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      padding: 32px
-    }
-
-    .f-row {
-      margin-bottom: 18px
-    }
-
-    .f-row-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 18px
-    }
-
-    .f-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 9.5px;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      color: var(--text3);
-      display: block;
-      margin-bottom: 7px
-    }
-
-    .f-input,
-    .f-textarea {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      padding: 10px 13px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13.5px;
-      font-weight: 300;
-      color: var(--text);
-      outline: none;
-      transition: border-color .2s, background .2s
-    }
-
-    .f-input:focus,
-    .f-textarea:focus {
-      border-color: var(--accent);
-      background: var(--surface)
-    }
-
-    .f-textarea {
-      resize: vertical;
-      min-height: 115px;
-      font-family: 'DM Sans', sans-serif
-    }
-
-    .f-submit {
-      width: 100%;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 2px;
-      padding: 12px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12.5px;
-      letter-spacing: .07em;
-      cursor: pointer;
-      transition: opacity .2s, transform .18s
-    }
-
-    .f-submit:hover {
-      opacity: .86;
-      transform: translateY(-1px)
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 24px 80px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px
-    }
-
-    .foot-copy {
-      font-family: 'DM Mono', monospace;
-      font-size: 10.5px;
-      letter-spacing: .07em;
-      color: var(--text3)
-    }
-
-    @keyframes aUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px)
-      }
-
-      to {
-        opacity: 1;
-        transform: none
-      }
-    }
-
-    @keyframes aIn {
-      from {
-        opacity: 0
-      }
-
-      to {
-        opacity: 1
-      }
-    }
-
-    @media(max-width:800px) {
-      nav {
-        padding: 0 20px
-      }
-
-      .nav-links {
-        display: none
-      }
-
-      section.wrap {
-        padding: 64px 22px
-      }
-
-      .hero-content {
-        padding: 0 22px
-      }
-
-      .hero-scroll {
-        left: 22px
-      }
-
-      .about-grid,
-      .exp-grid,
-      .contact-grid {
-        grid-template-columns: 1fr;
-        gap: 36px
-      }
-
-      footer {
-        padding: 18px 22px
-      }
-
-      .proj-grid {
-        grid-template-columns: 1fr
-      }
-
-      .f-row-2 {
-        grid-template-columns: 1fr
-      }
-
-      #rb1 {
-        right: 2%;
-        bottom: 10%
-      }
-
-      #rb1 svg {
-        width: 76px
-      }
-
-      #rb2,
-      #rb3 {
-        display: none
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Puru Raj Dhama — CS · Cloud · AI</title>
+<meta name="description" content="Portfolio of Puru Raj Dhama — Final Year CS student at Bennett University specialising in Cloud Computing and AI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0ece6;--bg2:#e8e2da;--bg3:#ddd6cc;
+  --surface:#fff;--border:rgba(0,0,0,.07);--border2:rgba(0,0,0,.13);
+  --text:#111;--text2:#484848;--text3:#888;--accent:#e85d04;
+  --tag-bg:rgba(14,14,14,.055);--nav-bg:rgba(240,236,230,.92);
+  --lc-empty:#e2ddd6;--lc1:#b7e4c7;--lc2:#74c69d;--lc3:#40916c;--lc4:#1b4332;
+  --tr:.38s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="dark"]{
+  --bg:#070b12;--bg2:#0c1120;--bg3:#101827;
+  --surface:#121a2c;--border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+  --text:#eceff8;--text2:#97a0b6;--text3:#525c76;--accent:#00c8ff;
+  --tag-bg:rgba(255,255,255,.055);--nav-bg:rgba(7,11,18,.94);
+  --lc-empty:#131b2c;--lc1:#0d3320;--lc2:#1a6640;--lc3:#2a9960;--lc4:#3ecc78;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);color:var(--text);transition:background var(--tr),color var(--tr);overflow-x:hidden}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:58px;background:var(--nav-bg);border-bottom:1px solid var(--border);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transition:background var(--tr),border-color var(--tr)}
+.nav-logo{font-family:'DM Mono',monospace;font-size:13px;font-weight:400;letter-spacing:.04em;color:var(--text);text-decoration:none}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;gap:18px;list-style:none;align-items:center;overflow:hidden}
+.nav-links a{font-size:11px;letter-spacing:.04em;color:var(--text3);text-decoration:none;transition:color .2s;font-weight:400;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:var(--text)}
+.theme-btn{display:flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);cursor:pointer;background:none;border:1px solid var(--border2);border-radius:4px;padding:5px 10px;transition:color .2s,border-color .2s}
+.theme-btn:hover{color:var(--text);border-color:var(--accent)}
+
+/* ── HERO ── */
+#hero{position:relative;width:100%;height:100vh;min-height:640px;overflow:hidden}
+#hero-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0}
+.hero-overlay{position:absolute;inset:0;z-index:1;pointer-events:none;transition:background var(--tr)}
+[data-theme="light"] .hero-overlay{background:linear-gradient(to right,rgba(240,236,230,.54) 0%,rgba(240,236,230,.16) 55%,transparent 100%)}
+[data-theme="dark"]  .hero-overlay{background:linear-gradient(to right,rgba(7,11,18,.68) 0%,rgba(7,11,18,.22) 55%,transparent 100%)}
+.hero-content{position:relative;z-index:3;height:100%;display:flex;flex-direction:column;justify-content:center;padding:0 80px;max-width:860px}
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--accent);margin-bottom:22px;opacity:0;animation:aUp .8s ease forwards .3s}
+.hero-name{font-size:clamp(50px,7vw,96px);font-weight:300;line-height:1.02;letter-spacing:-.03em;color:var(--text);margin-bottom:14px;opacity:0;animation:aUp .9s ease forwards .5s}
+.hero-name strong{font-weight:500}
+.hero-role{font-size:clamp(15px,2vw,21px);font-weight:300;color:var(--text2);letter-spacing:-.01em;margin-bottom:38px;line-height:1.6;opacity:0;animation:aUp .8s ease forwards .72s}
+.hero-role em{color:var(--accent);font-style:normal}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;opacity:0;animation:aUp .8s ease forwards .95s}
+.btn{font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:.08em;font-weight:400;padding:11px 26px;border-radius:3px;text-decoration:none;cursor:pointer;border:none;transition:transform .18s,box-shadow .18s,background .2s;display:inline-flex;align-items:center;gap:7px}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(232,93,4,.28)}
+[data-theme="dark"] .btn-primary:hover{box-shadow:0 8px 22px rgba(0,200,255,.22)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border2)}
+.btn-ghost:hover{transform:translateY(-2px);background:var(--surface)}
+.hero-scroll{position:absolute;bottom:32px;left:80px;z-index:3;display:flex;align-items:center;gap:10px;opacity:0;animation:aIn 1s ease forwards 1.8s}
+.hero-scroll span{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.2em;color:var(--text3)}
+.scroll-bar{width:38px;height:1px;background:linear-gradient(90deg,var(--accent),transparent)}
+
+/* ── ROBOTS ── */
+.rb{position:absolute;z-index:4;pointer-events:none;opacity:0}
+#rb1{right:10%;bottom:13%}
+#rb1 svg{width:110px;height:auto;filter:drop-shadow(0 12px 28px rgba(0,0,0,.13));transition:filter .4s}
+[data-theme="dark"] #rb1 svg{filter:drop-shadow(0 0 22px rgba(0,200,255,.42)) drop-shadow(0 10px 24px rgba(0,0,0,.65))}
+#rb2{right:27%;bottom:23%}
+#rb2 svg{width:68px;height:auto;filter:drop-shadow(0 8px 18px rgba(0,0,0,.11));transition:filter .4s}
+[data-theme="dark"] #rb2 svg{filter:drop-shadow(0 0 15px rgba(255,170,40,.38)) drop-shadow(0 8px 14px rgba(0,0,0,.58))}
+#rb3{right:5%;bottom:45%}
+#rb3 svg{width:48px;height:auto;filter:drop-shadow(0 5px 12px rgba(0,0,0,.10));transition:filter .4s}
+[data-theme="dark"] #rb3 svg{filter:drop-shadow(0 0 13px rgba(80,210,140,.44)) drop-shadow(0 4px 10px rgba(0,0,0,.52))}
+#rb1{animation-name:rbIn,rbF1;animation-duration:.85s,8s;animation-timing-function:ease,ease-in-out;animation-fill-mode:forwards,none;animation-iteration-count:1,infinite;animation-delay:1.1s,1.95s}
+#rb2{animation-name:rbIn,rbF2;animation-duration:.85s,10s;animation-timing-function:ease,ease-in-out;animation-fill-mode:forwards,none;animation-iteration-count:1,infinite;animation-delay:1.75s,2.6s}
+#rb3{animation-name:rbIn,rbF3;animation-duration:.85s,12s;animation-timing-function:ease,ease-in-out;animation-fill-mode:forwards,none;animation-iteration-count:1,infinite;animation-delay:2.35s,3.2s}
+@keyframes rbIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes rbF1{0%,100%{transform:translateY(0) rotate(-1.5deg)}35%{transform:translateY(-22px) rotate(1.5deg)}70%{transform:translateY(-9px) rotate(-.8deg)}}
+@keyframes rbF2{0%,100%{transform:translateY(0) rotate(2deg)}38%{transform:translateY(-18px) rotate(-2deg)}72%{transform:translateY(-7px) rotate(1.2deg)}}
+@keyframes rbF3{0%,100%{transform:translateY(0) rotate(-2.5deg)}33%{transform:translateY(-14px) rotate(3.5deg)}66%{transform:translateY(-5px) rotate(-1.5deg)}}
+
+/* ── DIVIDER ── */
+.divider{width:100%;height:1px;background:var(--border)}
+
+/* ── SECTIONS ── */
+section.wrap{padding:96px 80px;max-width:1200px;margin:0 auto;scroll-margin-top:58px}
+.sec-label{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:14px}
+.sec-label::before{content:attr(data-n);color:var(--text3);font-size:9px}
+.sec-title{font-size:clamp(28px,4vw,48px);font-weight:300;letter-spacing:-.02em;line-height:1.1;color:var(--text);margin-bottom:52px}
+.sec-title strong{font-weight:500}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ── ABOUT ── */
+.about-grid{display:grid;grid-template-columns:1fr 1.65fr;gap:72px;align-items:start}
+.photo-box{position:relative;aspect-ratio:3/4;background:var(--bg3);border-radius:3px;border:1px solid var(--border);overflow:hidden;color:var(--text3)}
+.photo-box img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.photo-box .photo-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.06))}
+.photo-box svg{width:32px;height:32px;opacity:.35}
+.photo-box span{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.15em}
+.about-bio{font-size:16px;line-height:1.8;color:var(--text2);margin-bottom:28px}
+.about-bio strong{color:var(--text);font-weight:500}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:3px;overflow:hidden;margin-bottom:28px}
+.stat-cell{background:var(--surface);padding:18px 14px;text-align:center}
+.stat-n{font-size:26px;font-weight:500;letter-spacing:-.03em;color:var(--text);line-height:1;margin-bottom:4px}
+.stat-l{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.16em;color:var(--text3);text-transform:uppercase}
+.tags{display:flex;flex-wrap:wrap;gap:7px}
+.tag{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.04em;padding:5px 11px;border-radius:2px;background:var(--tag-bg);color:var(--text2);border:1px solid var(--border);transition:border-color .2s,color .2s,background .2s}
+.tag:hover,.tag.hi{border-color:var(--accent);color:var(--accent);background:rgba(232,93,4,.07)}
+[data-theme="dark"] .tag.hi{background:rgba(0,200,255,.07)}
+
+/* ── TIMELINE ── */
+.tl-wrap{max-width:860px}
+.exp-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px 72px}
+.exp-grid-single{grid-template-columns:1fr;max-width:860px}
+.col-head{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:28px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.tl{position:relative;padding-left:24px}
+.tl::before{content:'';position:absolute;left:0;top:18px;bottom:20px;width:1px;background:var(--border2)}
+.tl-item{position:relative;margin-bottom:36px}
+.tl-item:last-child{margin-bottom:0}
+/* Hide the connecting line when there's only one item — nothing to connect */
+.tl-item:first-child:last-child ~ *{display:none}
+.tl:has(.tl-item:only-child)::before{display:none}
+.tl-item::before{content:'';position:absolute;left:-28px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--surface);border:2px solid var(--accent);transition:background .2s}
+.tl-item:hover::before{background:var(--accent)}
+.tl-date{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.14em;color:var(--text3);margin-bottom:5px}
+.tl-title{font-size:16px;font-weight:500;color:var(--text);letter-spacing:-.01em;margin-bottom:3px}
+.tl-org{font-size:12.5px;color:var(--accent);margin-bottom:8px}
+.tl-desc{font-size:13px;line-height:1.72;color:var(--text2)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.chip{font-family:'DM Mono',monospace;font-size:9.5px;padding:2px 7px;border-radius:2px;background:var(--tag-bg);color:var(--text3);border:1px solid var(--border)}
+
+/* ── PROJECTS ── */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:3px;overflow:hidden}
+.proj-card{background:var(--surface);padding:30px;cursor:pointer;position:relative;overflow:hidden;transition:background .2s}
+.proj-card::before{content:'';position:absolute;top:0;left:0;width:2.5px;height:0;background:var(--accent);transition:height .24s ease}
+.proj-card:hover::before{height:100%}
+.proj-card:hover{background:var(--bg2)}
+.proj-n{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.2em;color:var(--text3);margin-bottom:14px}
+.proj-title{font-size:17px;font-weight:500;letter-spacing:-.02em;color:var(--text);margin-bottom:9px;line-height:1.2}
+.proj-desc{font-size:12.5px;line-height:1.72;color:var(--text2);margin-bottom:18px}
+.proj-links{display:flex;gap:14px}
+.proj-link{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;color:var(--accent);text-decoration:none;transition:opacity .2s}
+.proj-link:hover{opacity:.65}
+
+/* ── ACHIEVEMENTS ── */
+.ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:14px}
+.ach-card{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:22px;transition:border-color .2s,transform .2s;position:relative}
+.ach-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.ach-ico{width:34px;height:34px;border-radius:3px;background:rgba(232,93,4,.07);border:1px solid rgba(232,93,4,.2);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+[data-theme="dark"] .ach-ico{background:rgba(0,200,255,.07);border-color:rgba(0,200,255,.2)}
+.ach-ico svg{width:15px;height:15px;color:var(--accent)}
+.ach-title{font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:5px;letter-spacing:-.01em}
+.ach-desc{font-size:11.5px;line-height:1.62;color:var(--text3)}
+.ach-yr{position:absolute;top:14px;right:14px;font-family:'DM Mono',monospace;font-size:8.5px;padding:2px 6px;border-radius:2px;background:var(--tag-bg);color:var(--text3);border:1px solid var(--border)}
+
+/* ── LEETCODE ── */
+.lc-card{background:var(--surface);border:1px solid var(--border);border-radius:3px;overflow:hidden}
+.lc-head{padding:22px 26px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.lc-user{display:flex;align-items:center;gap:12px}
+.lc-av{width:40px;height:40px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--text2)}
+.lc-uname{font-family:'DM Mono',monospace;font-size:12.5px;color:var(--text)}
+.lc-rank{font-size:11px;color:var(--text3);margin-top:2px}
+.lc-stats{display:flex;gap:22px;flex-wrap:wrap;align-items:center}
+.lc-s{text-align:center}
+.lc-sn{font-size:22px;font-weight:500;letter-spacing:-.03em;color:var(--text);line-height:1}
+.lc-sl{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.14em;color:var(--text3);text-transform:uppercase;margin-top:3px}
+.lc-sn.easy{color:#2d6a4f}[data-theme="dark"] .lc-sn.easy{color:#52b788}
+.lc-sn.med{color:#c17d0a}[data-theme="dark"] .lc-sn.med{color:#f4a224}
+.lc-sn.hard{color:#b91c1c}[data-theme="dark"] .lc-sn.hard{color:#f87171}
+.lc-loading{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:.08em;padding:4px 0}
+.lc-body{padding:26px}
+.lc-sub-label{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.14em;color:var(--text3);margin-bottom:10px}
+.lc-grid{display:grid;grid-template-columns:repeat(53,1fr);gap:2.5px}
+.lc-cell{aspect-ratio:1;border-radius:2px;background:var(--lc-empty);transition:transform .15s;cursor:default;position:relative}
+.lc-cell:hover{transform:scale(1.6);z-index:2}
+.lc-cell.l1{background:var(--lc1)}.lc-cell.l2{background:var(--lc2)}.lc-cell.l3{background:var(--lc3)}.lc-cell.l4{background:var(--lc4)}
+.lc-legend{display:flex;align-items:center;gap:5px;margin-top:10px;justify-content:flex-end}
+.lc-legend span{font-family:'DM Mono',monospace;font-size:9px;color:var(--text3)}
+.lc-leg-cell{width:10px;height:10px;border-radius:2px}
+.lc-profile-link{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--accent);text-decoration:none;transition:opacity .2s}
+.lc-profile-link:hover{opacity:.7}
+
+/* ── CONTACT ── */
+.contact-grid{display:grid;grid-template-columns:1fr 1.45fr;gap:72px;align-items:start}
+.contact-head{font-size:clamp(26px,3.8vw,42px);font-weight:300;letter-spacing:-.02em;line-height:1.2;color:var(--text);margin-bottom:16px}
+.contact-head strong{font-weight:500}
+.contact-sub{font-size:13.5px;line-height:1.78;color:var(--text2);margin-bottom:28px}
+.clinks{display:flex;flex-direction:column;gap:10px}
+.clink{display:flex;align-items:center;gap:12px;font-size:12.5px;color:var(--text2);text-decoration:none;transition:color .2s}
+.clink:hover{color:var(--accent)}
+.clink-icon{width:32px;height:32px;border-radius:3px;background:var(--tag-bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .2s,background .2s}
+.clink:hover .clink-icon{border-color:var(--accent);background:rgba(232,93,4,.06)}
+[data-theme="dark"] .clink:hover .clink-icon{background:rgba(0,200,255,.06)}
+.clink-icon svg{width:14px;height:14px}
+.form-box{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:32px}
+.f-row{margin-bottom:18px}
+.f-row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.f-label{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:7px}
+.f-input,.f-textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:2px;padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:300;color:var(--text);outline:none;transition:border-color .2s,background .2s}
+.f-input:focus,.f-textarea:focus{border-color:var(--accent);background:var(--surface)}
+.f-textarea{resize:vertical;min-height:115px;font-family:'DM Sans',sans-serif}
+.f-submit{width:100%;background:var(--accent);color:#fff;border:none;border-radius:2px;padding:12px;font-family:'DM Sans',sans-serif;font-size:12.5px;letter-spacing:.07em;cursor:pointer;transition:opacity .2s,transform .18s}
+.f-submit:hover{opacity:.86;transform:translateY(-1px)}
+footer{border-top:1px solid var(--border);padding:24px 80px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.foot-copy{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.07em;color:var(--text3)}
+
+/* ── MEDIUM SCREENS: shrink nav further ── */
+@media(max-width:1100px){
+  nav{padding:0 24px}
+  .nav-links{gap:14px}
+  .nav-links a{font-size:10.5px}
+}
+
+/* ── HAMBURGER MENU (mobile) ── */
+.nav-hamburger{
+  display:none;flex-direction:column;gap:4.5px;cursor:pointer;
+  background:none;border:none;padding:6px;
+}
+.nav-hamburger span{
+  display:block;width:20px;height:1.5px;
+  background:var(--text);border-radius:2px;
+  transition:all .25s ease;
+}
+.nav-hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.nav-hamburger.open span:nth-child(2){opacity:0}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+.nav-mobile-menu{
+  display:none;
+  position:fixed;top:58px;left:0;right:0;z-index:199;
+  background:var(--nav-bg);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  padding:16px 20px;
+  flex-direction:column;gap:0;
+}
+.nav-mobile-menu.open{display:flex}
+.nav-mobile-menu a{
+  font-size:13px;letter-spacing:.06em;color:var(--text2);
+  text-decoration:none;padding:11px 0;
+  border-bottom:1px solid var(--border);
+  transition:color .2s;font-weight:400;
+}
+.nav-mobile-menu a:last-child{border-bottom:none}
+.nav-mobile-menu a:hover{color:var(--accent)}
+
+@keyframes aUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes aIn{from{opacity:0}to{opacity:1}}
+
+@media(max-width:800px){
+  nav{padding:0 20px}
+  .nav-links{display:none}
+  .nav-hamburger{display:flex}
+  section.wrap{padding:64px 22px;scroll-margin-top:58px}
+  .hero-content{padding:0 22px}
+  .hero-scroll{left:22px;bottom:24px}
+  .about-grid,.exp-grid,.contact-grid{grid-template-columns:1fr;gap:36px}
+  footer{padding:18px 22px}
+  .proj-grid{grid-template-columns:1fr}
+  .f-row-2{grid-template-columns:1fr}
+  #rb1{right:2%;bottom:10%}
+  #rb1 svg{width:76px}
+  #rb2,#rb3{display:none}
+  .sec-title{margin-bottom:32px}
+}
+</style>
 </head>
-
 <body>
 
-  <!-- ═══ NAV ═══ -->
-  <nav>
-    <a href="#hero" class="nav-logo">dhama<span>.</span>tech</a>
-    <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#experience">Experience</a></li>
-      <li><a href="#education">Education</a></li>
-      <li><a href="#certifications">Certifications</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#achievements">Achievements</a></li>
-      <li><a href="#leetcode">LeetCode</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
+<!-- ═══ NAV ═══ -->
+<nav>
+  <a href="#hero" class="nav-logo">dhama<span>.</span>tech</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#certifications">Certifications</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#achievements">Achievements</a></li>
+    <li><a href="#leetcode">LeetCode</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:10px">
     <button class="theme-btn" id="themeBtn">
       <span id="themeIcon">☀</span>
       <span id="themeLabel">Light</span>
     </button>
-  </nav>
+    <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
 
-  <!-- ═══ HERO ═══ -->
-  <section id="hero">
-    <canvas id="hero-canvas"></canvas>
-    <div class="hero-overlay"></div>
+<!-- Mobile nav drawer -->
+<div class="nav-mobile-menu" id="mobileMenu">
+  <a href="#about" onclick="closeMobile()">About</a>
+  <a href="#experience" onclick="closeMobile()">Experience</a>
+  <a href="#education" onclick="closeMobile()">Education</a>
+  <a href="#certifications" onclick="closeMobile()">Certifications</a>
+  <a href="#projects" onclick="closeMobile()">Projects</a>
+  <a href="#achievements" onclick="closeMobile()">Achievements</a>
+  <a href="#leetcode" onclick="closeMobile()">LeetCode</a>
+  <a href="#contact" onclick="closeMobile()">Contact</a>
+</div>
 
-    <!-- Robot 1 — blue jetpack rider -->
-    <div class="rb" id="rb1">
-      <svg viewBox="0 0 130 178" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="55" cy="146" rx="8" ry="6" fill="#ff8c00" opacity=".72" />
-        <ellipse cx="75" cy="146" rx="8" ry="6" fill="#ff6f00" opacity=".72" />
-        <path d="M52 144 Q55 157 53 167" stroke="#ffb347" stroke-width="4.5" stroke-linecap="round" opacity=".5" />
-        <path d="M78 144 Q75 157 77 167" stroke="#ffb347" stroke-width="4.5" stroke-linecap="round" opacity=".5" />
-        <path d="M54 144 Q57 160 55 170" stroke="#ffe066" stroke-width="2" stroke-linecap="round" opacity=".28" />
-        <path d="M76 144 Q73 160 75 170" stroke="#ffe066" stroke-width="2" stroke-linecap="round" opacity=".28" />
-        <rect x="46" y="98" width="38" height="50" rx="8" fill="#c2d8f0" stroke="#9ab8dc" stroke-width="1" />
-        <rect x="53" y="105" width="24" height="7" rx="3.5" fill="#86a8cc" opacity=".55" />
-        <rect x="53" y="116" width="24" height="7" rx="3.5" fill="#86a8cc" opacity=".4" />
-        <rect x="38" y="76" width="54" height="62" rx="12" fill="#4f8fd0" stroke="#3470b8" stroke-width="1.2" />
-        <rect x="47" y="87" width="36" height="26" rx="5" fill="#2960a0" opacity=".62" />
-        <circle cx="57" cy="98" r="5" fill="#00e5ff" opacity=".95" />
-        <circle cx="73" cy="98" r="5" fill="#00e5ff" opacity=".95" />
-        <circle cx="57" cy="98" r="2.2" fill="white" opacity=".55" />
-        <circle cx="73" cy="98" r="2.2" fill="white" opacity=".55" />
-        <rect x="54" y="107" width="22" height="2.5" rx="1.25" fill="#00e5ff" opacity=".5" />
-        <rect x="20" y="80" width="18" height="42" rx="9" fill="#4f8fd0" stroke="#3470b8" stroke-width="1.2" />
-        <rect x="92" y="80" width="18" height="42" rx="9" fill="#4f8fd0" stroke="#3470b8" stroke-width="1.2" />
-        <ellipse cx="29" cy="126" rx="10" ry="8.5" fill="#3f7ec0" />
-        <ellipse cx="101" cy="126" rx="10" ry="8.5" fill="#3f7ec0" />
-        <rect x="36" y="28" width="58" height="54" rx="14" fill="#4f8fd0" stroke="#3470b8" stroke-width="1.2" />
-        <rect x="43" y="38" width="44" height="28" rx="8" fill="#001628" opacity=".9" />
-        <ellipse cx="56" cy="52" rx="7.5" ry="6.5" fill="#00e5ff" opacity=".95" />
-        <ellipse cx="74" cy="52" rx="7.5" ry="6.5" fill="#00e5ff" opacity=".95" />
-        <ellipse cx="56" cy="52" rx="3.5" ry="3" fill="white" opacity=".58" />
-        <ellipse cx="74" cy="52" rx="3.5" ry="3" fill="white" opacity=".58" />
-        <line x1="65" y1="28" x2="65" y2="11" stroke="#3470b8" stroke-width="2.8" stroke-linecap="round" />
-        <circle cx="65" cy="8.5" r="5.5" fill="#ff8c00" />
-        <circle cx="65" cy="8.5" r="2.8" fill="#ffe066" />
-        <rect x="48" y="72" width="34" height="5.5" rx="2.75" fill="#2960a0" opacity=".52" />
-        <rect x="53" y="73.5" width="10" height="2.5" rx="1.25" fill="#00e5ff" opacity=".72" />
-        <rect x="67" y="73.5" width="10" height="2.5" rx="1.25" fill="#00e5ff" opacity=".72" />
-        <ellipse class="rc" cx="65" cy="170" rx="40" ry="14" fill="white" opacity=".88" />
-        <ellipse class="rc" cx="45" cy="166" rx="24" ry="12" fill="white" opacity=".92" />
-        <ellipse class="rc" cx="85" cy="166" rx="26" ry="12" fill="white" opacity=".88" />
-      </svg>
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-overlay"></div>
+
+  <!-- Robot 1 — blue jetpack rider -->
+  <div class="rb" id="rb1">
+    <svg viewBox="0 0 130 178" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="55" cy="146" rx="8" ry="6" fill="#ff8c00" opacity=".72"/>
+      <ellipse cx="75" cy="146" rx="8" ry="6" fill="#ff6f00" opacity=".72"/>
+      <path d="M52 144 Q55 157 53 167" stroke="#ffb347" stroke-width="4.5" stroke-linecap="round" opacity=".5"/>
+      <path d="M78 144 Q75 157 77 167" stroke="#ffb347" stroke-width="4.5" stroke-linecap="round" opacity=".5"/>
+      <path d="M54 144 Q57 160 55 170" stroke="#ffe066" stroke-width="2" stroke-linecap="round" opacity=".28"/>
+      <path d="M76 144 Q73 160 75 170" stroke="#ffe066" stroke-width="2" stroke-linecap="round" opacity=".28"/>
+      <rect x="46" y="98" width="38" height="50" rx="8" fill="#c2d8f0" stroke="#9ab8dc" stroke-width="1"/>
+      <rect x="53" y="105" width="24" height="7" rx="3.5" fill="#86a8cc" opacity=".55"/>
+      <rect x="53" y="116" width="24" height="7" rx="3.5" fill="#86a8cc" opacity=".4"/>
+      <rect x="38" y="76" width="54" height="62" rx="12" fill="#4f8fd0" stroke="#3470b8" stroke-width="1.2"/>
+      <rect x="47" y="87" width="36" height="26" rx="5" fill="#2960a0" opacity=".62"/>
+      <circle cx="57" cy="98" r="5" fill="#00e5ff" opacity=".95"/>
+      <circle cx="73" cy="98" r="5" fill="#00e5ff" opacity=".95"/>
+      <circle cx="57" cy="98" r="2.2" fill="white" opacity=".55"/>
+      <circle cx="73" cy="98" r="2.2" fill="white" opacity=".55"/>
+      <rect x="54" y="107" width="22" height="2.5" rx="1.25" fill="#00e5ff" opacity=".5"/>
+      <rect x="20" y="80" width="18" height="42" rx="9" fill="#4f8fd0" stroke="#3470b8" stroke-width="1.2"/>
+      <rect x="92" y="80" width="18" height="42" rx="9" fill="#4f8fd0" stroke="#3470b8" stroke-width="1.2"/>
+      <ellipse cx="29" cy="126" rx="10" ry="8.5" fill="#3f7ec0"/>
+      <ellipse cx="101" cy="126" rx="10" ry="8.5" fill="#3f7ec0"/>
+      <rect x="36" y="28" width="58" height="54" rx="14" fill="#4f8fd0" stroke="#3470b8" stroke-width="1.2"/>
+      <rect x="43" y="38" width="44" height="28" rx="8" fill="#001628" opacity=".9"/>
+      <ellipse cx="56" cy="52" rx="7.5" ry="6.5" fill="#00e5ff" opacity=".95"/>
+      <ellipse cx="74" cy="52" rx="7.5" ry="6.5" fill="#00e5ff" opacity=".95"/>
+      <ellipse cx="56" cy="52" rx="3.5" ry="3" fill="white" opacity=".58"/>
+      <ellipse cx="74" cy="52" rx="3.5" ry="3" fill="white" opacity=".58"/>
+      <line x1="65" y1="28" x2="65" y2="11" stroke="#3470b8" stroke-width="2.8" stroke-linecap="round"/>
+      <circle cx="65" cy="8.5" r="5.5" fill="#ff8c00"/>
+      <circle cx="65" cy="8.5" r="2.8" fill="#ffe066"/>
+      <rect x="48" y="72" width="34" height="5.5" rx="2.75" fill="#2960a0" opacity=".52"/>
+      <rect x="53" y="73.5" width="10" height="2.5" rx="1.25" fill="#00e5ff" opacity=".72"/>
+      <rect x="67" y="73.5" width="10" height="2.5" rx="1.25" fill="#00e5ff" opacity=".72"/>
+      <ellipse class="rc" cx="65" cy="170" rx="40" ry="14" fill="white" opacity=".88"/>
+      <ellipse class="rc" cx="45" cy="166" rx="24" ry="12" fill="white" opacity=".92"/>
+      <ellipse class="rc" cx="85" cy="166" rx="26" ry="12" fill="white" opacity=".88"/>
+    </svg>
+  </div>
+
+  <!-- Robot 2 — orange waving sidekick -->
+  <div class="rb" id="rb2">
+    <svg viewBox="0 0 88 122" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="37" cy="100" rx="6" ry="4" fill="#ff8c00" opacity=".7"/>
+      <ellipse cx="51" cy="100" rx="6" ry="4" fill="#ff6f00" opacity=".7"/>
+      <path d="M36 98 Q37 108 35 115" stroke="#ffb347" stroke-width="3.5" stroke-linecap="round" opacity=".48"/>
+      <path d="M52 98 Q51 108 53 115" stroke="#ffb347" stroke-width="3.5" stroke-linecap="round" opacity=".48"/>
+      <rect x="30" y="64" width="28" height="38" rx="6" fill="#d8eafa" stroke="#aacce8" stroke-width=".8"/>
+      <rect x="24" y="50" width="40" height="42" rx="9" fill="#e85d04" stroke="#c04600" stroke-width="1"/>
+      <rect x="30" y="58" width="28" height="18" rx="4" fill="#a03800" opacity=".52"/>
+      <circle cx="37" cy="67" r="4" fill="#ffe066" opacity=".95"/>
+      <circle cx="51" cy="67" r="4" fill="#ffe066" opacity=".95"/>
+      <circle cx="37" cy="67" r="1.8" fill="white" opacity=".5"/>
+      <circle cx="51" cy="67" r="1.8" fill="white" opacity=".5"/>
+      <rect x="35" y="74" width="18" height="2" rx="1" fill="#ffe066" opacity=".45"/>
+      <rect x="7" y="40" width="16" height="27" rx="8" fill="#e85d04" stroke="#c04600" stroke-width="1" transform="rotate(-38 15 40)"/>
+      <ellipse cx="8" cy="30" rx="8" ry="6.5" fill="#c04600" transform="rotate(-38 8 30)"/>
+      <rect x="65" y="52" width="16" height="30" rx="8" fill="#e85d04" stroke="#c04600" stroke-width="1"/>
+      <ellipse cx="73" cy="86" rx="8" ry="6.5" fill="#c04600"/>
+      <rect x="22" y="14" width="44" height="40" rx="11" fill="#e85d04" stroke="#c04600" stroke-width="1"/>
+      <rect x="27" y="20" width="34" height="21" rx="5.5" fill="#1a0600" opacity=".9"/>
+      <ellipse cx="37" cy="30.5" rx="5.5" ry="5" fill="#ffe066" opacity=".95"/>
+      <ellipse cx="51" cy="30.5" rx="5.5" ry="5" fill="#ffe066" opacity=".95"/>
+      <ellipse cx="37" cy="30.5" rx="2.5" ry="2.2" fill="white" opacity=".52"/>
+      <ellipse cx="51" cy="30.5" rx="2.5" ry="2.2" fill="white" opacity=".52"/>
+      <line x1="44" y1="14" x2="44" y2="5" stroke="#c04600" stroke-width="2.2" stroke-linecap="round"/>
+      <circle cx="44" cy="3.5" r="3.5" fill="#ffe066"/>
+      <path d="M33 42 Q44 49 55 42" fill="none" stroke="#c04600" stroke-width="1.8" stroke-linecap="round" opacity=".55"/>
+      <ellipse class="rc" cx="44" cy="114" rx="30" ry="10" fill="white" opacity=".82"/>
+      <ellipse class="rc" cx="31" cy="112" rx="19" ry="9" fill="white" opacity=".86"/>
+      <ellipse class="rc" cx="57" cy="112" rx="20" ry="9" fill="white" opacity=".82"/>
+    </svg>
+  </div>
+
+  <!-- Robot 3 — tiny green scout -->
+  <div class="rb" id="rb3">
+    <svg viewBox="0 0 64 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="5" width="4" height="18" rx="2" fill="#7abca8"/>
+      <ellipse cx="32" cy="5" rx="9" ry="3.5" fill="#a8d8c8" opacity=".88"/>
+      <ellipse cx="32" cy="5" rx="28" ry="4" fill="#c8ece4" opacity=".55"/>
+      <ellipse cx="32" cy="5" rx="28" ry="4" fill="#c8ece4" opacity=".4" transform="rotate(60 32 5)"/>
+      <ellipse cx="32" cy="5" rx="28" ry="4" fill="#c8ece4" opacity=".4" transform="rotate(120 32 5)"/>
+      <rect x="16" y="22" width="32" height="30" rx="7" fill="#2d6a4f" stroke="#1e4a37" stroke-width=".9"/>
+      <rect x="20" y="27" width="24" height="14" rx="3.5" fill="#1e4a37" opacity=".6"/>
+      <circle cx="27" cy="34" r="3.2" fill="#52b788" opacity=".95"/>
+      <circle cx="37" cy="34" r="3.2" fill="#52b788" opacity=".95"/>
+      <circle cx="27" cy="34" r="1.4" fill="white" opacity=".5"/>
+      <circle cx="37" cy="34" r="1.4" fill="white" opacity=".5"/>
+      <rect x="25" y="38" width="14" height="1.5" rx=".75" fill="#52b788" opacity=".45"/>
+      <rect x="4" y="24" width="12" height="20" rx="6" fill="#2d6a4f" stroke="#1e4a37" stroke-width=".9"/>
+      <rect x="48" y="24" width="12" height="20" rx="6" fill="#2d6a4f" stroke="#1e4a37" stroke-width=".9"/>
+      <rect x="18" y="4" width="28" height="22" rx="7" fill="#2d6a4f" stroke="#1e4a37" stroke-width=".9"/>
+      <rect x="22" y="8" width="20" height="13" rx="3.5" fill="#001a0d" opacity=".9"/>
+      <ellipse cx="28" cy="14.5" rx="4" ry="3.5" fill="#52b788" opacity=".95"/>
+      <ellipse cx="36" cy="14.5" rx="4" ry="3.5" fill="#52b788" opacity=".95"/>
+      <ellipse cx="28" cy="14.5" rx="1.8" ry="1.6" fill="white" opacity=".5"/>
+      <ellipse cx="36" cy="14.5" rx="1.8" ry="1.6" fill="white" opacity=".5"/>
+      <rect x="24" y="21" width="16" height="3" rx="1.5" fill="#1e4a37" opacity=".48"/>
+      <ellipse cx="20" cy="55" rx="7" ry="3.2" fill="#52b788" opacity=".4"/>
+      <ellipse cx="44" cy="55" rx="7" ry="3.2" fill="#52b788" opacity=".4"/>
+      <ellipse cx="32" cy="58" rx="12" ry="4.5" fill="#52b788" opacity=".2"/>
+      <ellipse class="rc" cx="32" cy="76" rx="22" ry="9" fill="white" opacity=".78"/>
+      <ellipse class="rc" cx="20" cy="74" rx="14" ry="8" fill="white" opacity=".82"/>
+      <ellipse class="rc" cx="44" cy="74" rx="14" ry="8" fill="white" opacity=".78"/>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">Final Year · Computer Science · Cloud &amp; AI</p>
+    <h1 class="hero-name"><strong>Puru Raj</strong><br>Dhama</h1>
+    <p class="hero-role">
+      Building intelligent systems <em>in the cloud</em> —<br>
+      from neural networks to distributed infrastructure.
+    </p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">View Work →</a>
+      <a href="#contact" class="btn btn-ghost">Get In Touch</a>
     </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-bar"></div>
+    <span>Scroll to explore</span>
+  </div>
+</section>
 
-    <!-- Robot 2 — orange waving sidekick -->
-    <div class="rb" id="rb2">
-      <svg viewBox="0 0 88 122" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="37" cy="100" rx="6" ry="4" fill="#ff8c00" opacity=".7" />
-        <ellipse cx="51" cy="100" rx="6" ry="4" fill="#ff6f00" opacity=".7" />
-        <path d="M36 98 Q37 108 35 115" stroke="#ffb347" stroke-width="3.5" stroke-linecap="round" opacity=".48" />
-        <path d="M52 98 Q51 108 53 115" stroke="#ffb347" stroke-width="3.5" stroke-linecap="round" opacity=".48" />
-        <rect x="30" y="64" width="28" height="38" rx="6" fill="#d8eafa" stroke="#aacce8" stroke-width=".8" />
-        <rect x="24" y="50" width="40" height="42" rx="9" fill="#e85d04" stroke="#c04600" stroke-width="1" />
-        <rect x="30" y="58" width="28" height="18" rx="4" fill="#a03800" opacity=".52" />
-        <circle cx="37" cy="67" r="4" fill="#ffe066" opacity=".95" />
-        <circle cx="51" cy="67" r="4" fill="#ffe066" opacity=".95" />
-        <circle cx="37" cy="67" r="1.8" fill="white" opacity=".5" />
-        <circle cx="51" cy="67" r="1.8" fill="white" opacity=".5" />
-        <rect x="35" y="74" width="18" height="2" rx="1" fill="#ffe066" opacity=".45" />
-        <rect x="7" y="40" width="16" height="27" rx="8" fill="#e85d04" stroke="#c04600" stroke-width="1"
-          transform="rotate(-38 15 40)" />
-        <ellipse cx="8" cy="30" rx="8" ry="6.5" fill="#c04600" transform="rotate(-38 8 30)" />
-        <rect x="65" y="52" width="16" height="30" rx="8" fill="#e85d04" stroke="#c04600" stroke-width="1" />
-        <ellipse cx="73" cy="86" rx="8" ry="6.5" fill="#c04600" />
-        <rect x="22" y="14" width="44" height="40" rx="11" fill="#e85d04" stroke="#c04600" stroke-width="1" />
-        <rect x="27" y="20" width="34" height="21" rx="5.5" fill="#1a0600" opacity=".9" />
-        <ellipse cx="37" cy="30.5" rx="5.5" ry="5" fill="#ffe066" opacity=".95" />
-        <ellipse cx="51" cy="30.5" rx="5.5" ry="5" fill="#ffe066" opacity=".95" />
-        <ellipse cx="37" cy="30.5" rx="2.5" ry="2.2" fill="white" opacity=".52" />
-        <ellipse cx="51" cy="30.5" rx="2.5" ry="2.2" fill="white" opacity=".52" />
-        <line x1="44" y1="14" x2="44" y2="5" stroke="#c04600" stroke-width="2.2" stroke-linecap="round" />
-        <circle cx="44" cy="3.5" r="3.5" fill="#ffe066" />
-        <path d="M33 42 Q44 49 55 42" fill="none" stroke="#c04600" stroke-width="1.8" stroke-linecap="round"
-          opacity=".55" />
-        <ellipse class="rc" cx="44" cy="114" rx="30" ry="10" fill="white" opacity=".82" />
-        <ellipse class="rc" cx="31" cy="112" rx="19" ry="9" fill="white" opacity=".86" />
-        <ellipse class="rc" cx="57" cy="112" rx="20" ry="9" fill="white" opacity=".82" />
-      </svg>
+<div class="divider"></div>
+
+<!-- ═══ ABOUT ═══ -->
+<section class="wrap" id="about">
+  <p class="sec-label" data-n="01">About</p>
+  <div class="about-grid reveal">
+    <div class="photo-box">
+      <img src="puru_portfolio_pic.jpeg" alt="Puru Raj Dhama portrait" onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none'">
+      <div   class="photo-fallback">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <span>Puru Raj Dhama</span>
+      </div>
     </div>
-
-    <!-- Robot 3 — tiny green scout -->
-    <div class="rb" id="rb3">
-      <svg viewBox="0 0 64 88" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="30" y="5" width="4" height="18" rx="2" fill="#7abca8" />
-        <ellipse cx="32" cy="5" rx="9" ry="3.5" fill="#a8d8c8" opacity=".88" />
-        <ellipse cx="32" cy="5" rx="28" ry="4" fill="#c8ece4" opacity=".55" />
-        <ellipse cx="32" cy="5" rx="28" ry="4" fill="#c8ece4" opacity=".4" transform="rotate(60 32 5)" />
-        <ellipse cx="32" cy="5" rx="28" ry="4" fill="#c8ece4" opacity=".4" transform="rotate(120 32 5)" />
-        <rect x="16" y="22" width="32" height="30" rx="7" fill="#2d6a4f" stroke="#1e4a37" stroke-width=".9" />
-        <rect x="20" y="27" width="24" height="14" rx="3.5" fill="#1e4a37" opacity=".6" />
-        <circle cx="27" cy="34" r="3.2" fill="#52b788" opacity=".95" />
-        <circle cx="37" cy="34" r="3.2" fill="#52b788" opacity=".95" />
-        <circle cx="27" cy="34" r="1.4" fill="white" opacity=".5" />
-        <circle cx="37" cy="34" r="1.4" fill="white" opacity=".5" />
-        <rect x="25" y="38" width="14" height="1.5" rx=".75" fill="#52b788" opacity=".45" />
-        <rect x="4" y="24" width="12" height="20" rx="6" fill="#2d6a4f" stroke="#1e4a37" stroke-width=".9" />
-        <rect x="48" y="24" width="12" height="20" rx="6" fill="#2d6a4f" stroke="#1e4a37" stroke-width=".9" />
-        <rect x="18" y="4" width="28" height="22" rx="7" fill="#2d6a4f" stroke="#1e4a37" stroke-width=".9" />
-        <rect x="22" y="8" width="20" height="13" rx="3.5" fill="#001a0d" opacity=".9" />
-        <ellipse cx="28" cy="14.5" rx="4" ry="3.5" fill="#52b788" opacity=".95" />
-        <ellipse cx="36" cy="14.5" rx="4" ry="3.5" fill="#52b788" opacity=".95" />
-        <ellipse cx="28" cy="14.5" rx="1.8" ry="1.6" fill="white" opacity=".5" />
-        <ellipse cx="36" cy="14.5" rx="1.8" ry="1.6" fill="white" opacity=".5" />
-        <rect x="24" y="21" width="16" height="3" rx="1.5" fill="#1e4a37" opacity=".48" />
-        <ellipse cx="20" cy="55" rx="7" ry="3.2" fill="#52b788" opacity=".4" />
-        <ellipse cx="44" cy="55" rx="7" ry="3.2" fill="#52b788" opacity=".4" />
-        <ellipse cx="32" cy="58" rx="12" ry="4.5" fill="#52b788" opacity=".2" />
-        <ellipse class="rc" cx="32" cy="76" rx="22" ry="9" fill="white" opacity=".78" />
-        <ellipse class="rc" cx="20" cy="74" rx="14" ry="8" fill="white" opacity=".82" />
-        <ellipse class="rc" cx="44" cy="74" rx="14" ry="8" fill="white" opacity=".78" />
-      </svg>
-    </div>
-
-    <div class="hero-content">
-      <p class="hero-eyebrow">Final Year · Computer Science · Cloud &amp; AI</p>
-      <h1 class="hero-name"><strong>Puru Raj</strong><br>Dhama</h1>
-      <p class="hero-role">
-        Building intelligent systems <em>in the cloud</em> —<br>
-        from neural networks to distributed infrastructure.
+    <div>
+      <p class="about-bio">
+        I'm <strong>Puru Raj Dhama</strong>, a final-year Computer Science student at <strong>Bennett University (Times Group)</strong>,
+        Greater Noida, specialising in <strong>Cloud Computing and Artificial Intelligence</strong>.
+        I design and build systems that scale — from training ML models to architecting
+        cloud-native applications on AWS, Azure and GCP.<br><br>
+        Currently exploring the intersection of <strong>large language models</strong> and <strong>cloud
+        infrastructure</strong>, building tools that make AI more accessible, reliable, and production-ready.
       </p>
-      <div class="hero-cta">
-        <a href="#projects" class="btn btn-primary">View Work →</a>
-        <a href="#contact" class="btn btn-ghost">Get In Touch</a>
+      <div class="stat-row">
+        <div class="stat-cell"><div class="stat-n" id="stat-projects">6+</div><div class="stat-l">Projects</div></div>
+        <div class="stat-cell"><div class="stat-n" id="stat-internships">1+</div><div class="stat-l">Internships</div></div>
+        <div class="stat-cell"><div class="stat-n" id="lc-total-stat">—</div><div class="stat-l">LC Solved</div></div>
+      </div>
+      <div class="tags">
+        <span class="tag hi">Cloud Computing</span><span class="tag hi">Machine Learning</span>
+        <span class="tag hi">AWS / GCP</span><span class="tag">Python</span>
+        <span class="tag">TensorFlow</span><span class="tag">Kubernetes</span>
+        <span class="tag">Docker</span><span class="tag">FastAPI</span>
+        <span class="tag">React</span><span class="tag">PostgreSQL</span>
+        <span class="tag">Terraform</span><span class="tag">CI/CD</span>
+        <span class="tag">LLMs / RAG</span><span class="tag">Java</span><span class="tag">Go</span>
       </div>
     </div>
-    <div class="hero-scroll">
-      <div class="scroll-bar"></div>
-      <span>Scroll to explore</span>
-    </div>
-  </section>
+  </div>
+</section>
 
-  <div class="divider"></div>
+<div class="divider"></div>
 
-  <!-- ═══ ABOUT ═══ -->
-  <section class="wrap" id="about">
-    <p class="sec-label" data-n="01">About</p>
-    <div class="about-grid reveal">
-      <div class="photo-box">
-        <img src="puru_portfolio_pic.jpeg" alt="Puru Raj Dhama portrait"
-          onload="this.nextElementSibling.style.display='none'" onerror="this.style.display='none'">
-        <div class="photo-fallback">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
-            <circle cx="12" cy="8" r="4" />
-            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-          </svg>
-          <span>Puru Raj Dhama</span>
-        </div>
-      </div>
-      <div>
-        <p class="about-bio">
-          I'm <strong>Puru Raj Dhama</strong>, a final-year Computer Science student at <strong>Bennett University
-            (Times Group)</strong>,
-          Greater Noida, specialising in <strong>Cloud Computing and Artificial Intelligence</strong>.
-          I design and build systems that scale — from training ML models to architecting
-          cloud-native applications on AWS, Azure and GCP.<br><br>
-          Currently exploring the intersection of <strong>large language models</strong> and <strong>cloud
-            infrastructure</strong>, building tools that make AI more accessible, reliable, and production-ready.
-        </p>
-        <div class="stat-row">
-          <div class="stat-cell">
-            <div class="stat-n" id="stat-projects">6+</div>
-            <div class="stat-l">Projects</div>
-          </div>
-          <div class="stat-cell">
-            <div class="stat-n" id="stat-internships">1+</div>
-            <div class="stat-l">Internships</div>
-          </div>
-          <div class="stat-cell">
-            <div class="stat-n" id="lc-total-stat">—</div>
-            <div class="stat-l">LC Solved</div>
-          </div>
-        </div>
-        <div class="tags">
-          <span class="tag hi">Cloud Computing</span><span class="tag hi">Machine Learning</span>
-          <span class="tag hi">AWS / GCP/ Azure</span><span class="tag">Python</span>
-          <span class="tag">Java</span><span class="tag">FastAPI</span>
-          <span class="tag">Docker</span><span class="tag">Git</span>
-          <span class="tag">MongoDB</span><span class="tag">PostgreSQL</span>
-          <span class="tag">Kubernetes</span><span class="tag">Docker</span>
-          <span class="tag">CI/CD</span><span class="tag">LLMs / RAG</span>
-          <span class="tag">MCP</span><span class="tag">Prompting</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- ═══ EXPERIENCE ═══ -->
-  <section class="wrap" id="experience">
-    <p class="sec-label" data-n="02">Experience</p>
-    <h2 class="sec-title reveal">Where I've <strong>worked.</strong></h2>
-    <div class="exp-grid exp-grid-single">
-      <div class="reveal">
-        <div class="col-head">Work Experience</div>
-        <div class="tl">
-          <div class="tl-item">
-            <div class="tl-date">Jun 2025 - Jul 2025 · 2 mos</div>
-            <div class="tl-title">Summer Intern</div>
-            <div class="tl-org">Crest Data · Ahmedabad, Gujarat, India · On-site</div>
-            <div class="tl-desc">Built custom MCP servers for vulnerability detection and prioritization. Integrated AI
-              agents, including Windsurf and Copilot, to test real-time vulnerability remediation workflows. Designed
-              Cascade rules and workflows for LLM-guided code fixes and introduced context engineering to evaluate
-              prompt strategies and agent performance.</div>
-            <div class="chips"><span class="chip">MCP</span><span class="chip">Context Engineering</span><span
-                class="chip">Prompt Engineering</span><span class="chip">AI Agents</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- ═══ EDUCATION ═══ -->
-  <section class="wrap" id="education">
-    <p class="sec-label" data-n="03">Education</p>
-    <h2 class="sec-title reveal">Academic <strong>journey.</strong></h2>
+<!-- ═══ EXPERIENCE ═══ -->
+<section class="wrap" id="experience">
+  <p class="sec-label" data-n="02">Experience</p>
+  <h2 class="sec-title reveal">Where I've <strong>worked.</strong></h2>
+  <div class="exp-grid exp-grid-single">
     <div class="reveal">
+      <div class="col-head">Work Experience</div>
       <div class="tl">
         <div class="tl-item">
-          <div class="tl-date">2020</div>
-          <div class="tl-title">Class 10</div>
-          <div class="tl-org">Delhi Public School · CBSE Board</div>
-          <div class="tl-desc">Grade: 89%.</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-date">2022</div>
-          <div class="tl-title">Class 12</div>
-          <div class="tl-org">Delhi Public School · CBSE Board</div>
-          <div class="tl-desc">Grade: 87.2%.</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-date">2022 - 2026</div>
-          <div class="tl-title">B.Tech, Computer Science &amp; Engineering</div>
-          <div class="tl-org">Bennett University (Times Group), Greater Noida</div>
-          <div class="tl-desc">Specialisation in Cloud Computing and AI. CGPA: 7.5/10. Coursework includes Distributed
-            Systems, Deep Learning, Cloud Architecture, and Algorithm Design.</div>
-          <div class="chips"><span class="chip">CGPA 7.5</span><span class="chip">Cloud Spec.</span><span
-              class="chip">AI Spec.</span></div>
+          <div class="tl-date">Jun 2025 - Jul 2025 · 2 mos</div>
+          <div class="tl-title">Summer Intern</div>
+          <div class="tl-org">Crest Data · Ahmedabad, Gujarat, India · On-site</div>
+          <div class="tl-desc">Built custom MCP servers for vulnerability detection and prioritization. Integrated AI agents, including Windsurf and Copilot, to test real-time vulnerability remediation workflows. Designed Cascade rules and workflows for LLM-guided code fixes and introduced context engineering to evaluate prompt strategies and agent performance.</div>
+          <div class="chips"><span class="chip">MCP</span><span class="chip">Context Engineering</span><span class="chip">Prompt Engineering</span><span class="chip">AI Agents</span></div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <div class="divider"></div>
+<div class="divider"></div>
 
-  <!-- ═══ CERTIFICATIONS ═══ -->
-  <section class="wrap" id="certifications">
-    <p class="sec-label" data-n="04">Certifications</p>
-    <h2 class="sec-title reveal">Professional <strong>learning.</strong></h2>
+<!-- ═══ EDUCATION ═══ -->
+<section class="wrap" id="education">
+  <p class="sec-label" data-n="03">Education</p>
+  <h2 class="sec-title reveal">Academic <strong>journey.</strong></h2>
+  <div class="reveal tl-wrap">
+    <div class="tl">
+      <div class="tl-item">
+        <div class="tl-date">2020</div>
+        <div class="tl-title">Class 10</div>
+        <div class="tl-org">Delhi Public School · CBSE Board</div>
+        <div class="tl-desc">Grade: 89%.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2022</div>
+        <div class="tl-title">Class 12</div>
+        <div class="tl-org">Delhi Public School · CBSE Board</div>
+        <div class="tl-desc">Grade: 87.2%.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2022 - 2026</div>
+        <div class="tl-title">B.Tech, Computer Science &amp; Engineering</div>
+        <div class="tl-org">Bennett University (Times Group), Greater Noida</div>
+        <div class="tl-desc">Specialisation in Cloud Computing and AI. CGPA: 7.5/10. Coursework includes Distributed Systems, Deep Learning, Cloud Architecture, and Algorithm Design.</div>
+        <div class="chips"><span class="chip">CGPA 7.5</span><span class="chip">Cloud Spec.</span><span class="chip">AI Spec.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ CERTIFICATIONS ═══ -->
+<section class="wrap" id="certifications">
+  <p class="sec-label" data-n="04">Certifications</p>
+  <h2 class="sec-title reveal">Professional <strong>learning.</strong></h2>
+  <div class="reveal">
+    <div class="tl">
+      <div class="tl-item">
+        <div class="tl-date">Apr 2024</div>
+        <div class="tl-title">AWS Cloud Practitioner Essentials</div>
+        <div class="tl-org">Amazon Web Services (AWS) · Credential ID HR78Z2TKVKWY</div>
+        <div class="tl-desc">Foundational certification covering core AWS services, cloud concepts, pricing, security, and architecture fundamentals.</div>
+        <div class="chips"><span class="chip">AWS</span><span class="chip">Cloud Fundamentals</span></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Oct 2024</div>
+        <div class="tl-title">Google Cloud Computing Foundation with Kubernetes</div>
+        <div class="tl-org">Google Cloud Skills Boost · Credential ID 11810854</div>
+        <div class="tl-desc">Covered Google Cloud fundamentals with Kubernetes-based application deployment and orchestration.</div>
+        <div class="chips"><span class="chip">GCP</span><span class="chip">Kubernetes</span></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Jun 2025</div>
+        <div class="tl-title">MCP: Build Rich-Context AI Apps with Anthropic</div>
+        <div class="tl-org">DeepLearning.AI</div>
+        <div class="tl-desc">Learned how to build rich-context AI applications using the Model Context Protocol and Anthropic's ecosystem.</div>
+        <div class="chips"><span class="chip">MCP</span><span class="chip">Anthropic</span><span class="chip">AI Apps</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ PROJECTS ═══ -->
+<section class="wrap" id="projects">
+  <p class="sec-label" data-n="05">Projects</p>
+  <h2 class="sec-title reveal">Things I've <strong>built.</strong></h2>
+  <div class="proj-grid reveal">
+    <div class="proj-card">
+      <div class="proj-n">001</div>
+      <div class="proj-title">Project Name — One-line tagline</div>
+      <div class="proj-desc">2–3 sentences describing what it does, what problem it solves, and the tech stack used. Mention any interesting results or scale.</div>
+      <div class="chips" style="margin-bottom:16px"><span class="chip">Tech 1</span><span class="chip">Tech 2</span><span class="chip">Tech 3</span></div>
+      <div class="proj-links"><a href="https://github.com/heyitspuru" target="_blank" class="proj-link">↗ GitHub</a></div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-n">002</div>
+      <div class="proj-title">Project Name — One-line tagline</div>
+      <div class="proj-desc">2–3 sentences describing what it does, the architecture, and any notable outcomes.</div>
+      <div class="chips" style="margin-bottom:16px"><span class="chip">Tech 1</span><span class="chip">Tech 2</span><span class="chip">Tech 3</span></div>
+      <div class="proj-links"><a href="https://github.com/heyitspuru" target="_blank" class="proj-link">↗ GitHub</a></div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-n">003</div>
+      <div class="proj-title">Project Name — One-line tagline</div>
+      <div class="proj-desc">2–3 sentences. What does it do? What's the tech? Any cool numbers or results?</div>
+      <div class="chips" style="margin-bottom:16px"><span class="chip">Tech 1</span><span class="chip">Tech 2</span><span class="chip">Tech 3</span></div>
+      <div class="proj-links"><a href="https://github.com/heyitspuru" target="_blank" class="proj-link">↗ GitHub</a></div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-n">004</div>
+      <div class="proj-title">Project Name — One-line tagline</div>
+      <div class="proj-desc">2–3 sentences describing the project, motivation, and what makes it interesting technically.</div>
+      <div class="chips" style="margin-bottom:16px"><span class="chip">Tech 1</span><span class="chip">Tech 2</span></div>
+      <div class="proj-links"><a href="https://github.com/heyitspuru" target="_blank" class="proj-link">↗ GitHub</a></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ ACHIEVEMENTS ═══ -->
+<section class="wrap" id="achievements">
+  <p class="sec-label" data-n="06">Achievements</p>
+  <h2 class="sec-title reveal">Recognition &amp; <strong>milestones.</strong></h2>
+  <div class="ach-grid reveal">
+    <div class="ach-card">
+      <div class="ach-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1l2 4 4.5.7-3.2 3.1.75 4.4L8 11l-4 2.2.75-4.4L1.5 5.7 6 5z"/></svg></div>
+      <span class="ach-yr">2025</span>
+      <div class="ach-title">IEEE Research Paper Publication</div>
+      <div class="ach-desc">"Automated Detection of Bottle Fill Levels Using CNN and MobileNetV2" published in IEEE.</div>
+    </div>
+    <div class="ach-card">
+      <div class="ach-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="14" height="10" rx="2"/><path d="M5 4V3a2 2 0 014 0v1"/></svg></div>
+      <span class="ach-yr">2025</span>
+      <div class="ach-title">Winner - Mined, Crest Data @ Nirma University</div>
+      <div class="ach-desc">Hackathon win for a solution focused on practical problem-solving and technical execution.</div>
+    </div>
+    <div class="ach-card">
+      <div class="ach-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="7"/><path d="M8 4v4l3 2"/></svg></div>
+      <span class="ach-yr">2025</span>
+      <div class="ach-title">Finalist - Datathon by Analytika @ NMIMS</div>
+      <div class="ach-desc">Reached the finalist stage in a competitive datathon with a strong analytical and implementation-focused submission.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ LEETCODE ═══ -->
+<section class="wrap" id="leetcode">
+  <p class="sec-label" data-n="07">LeetCode</p>
+  <h2 class="sec-title reveal">Consistent <strong>practice.</strong></h2>
+  <div class="lc-card reveal">
+    <div class="lc-head">
+      <div class="lc-user">
+        <div class="lc-av">PR</div>
+        <div>
+          <div class="lc-uname">Raj_0106</div>
+          <div class="lc-rank" id="lc-rank-display">Loading profile…</div>
+        </div>
+      </div>
+      <div class="lc-stats">
+        <div class="lc-s"><div class="lc-sn" id="lc-total">—</div><div class="lc-sl">Total Solved</div></div>
+        <div class="lc-s"><div class="lc-sn easy" id="lc-easy">—</div><div class="lc-sl">Easy</div></div>
+        <div class="lc-s"><div class="lc-sn med" id="lc-med">—</div><div class="lc-sl">Medium</div></div>
+        <div class="lc-s"><div class="lc-sn hard" id="lc-hard">—</div><div class="lc-sl">Hard</div></div>
+        <div class="lc-s"><div class="lc-sn" id="lc-ranking">—</div><div class="lc-sl">Global Rank</div></div>
+        <a href="https://leetcode.com/u/Raj_0106" target="_blank" class="lc-profile-link">↗ Profile</a>
+      </div>
+    </div>
+    <div class="lc-body">
+      <div class="lc-sub-label">Submission activity · Last 52 weeks</div>
+      <div class="lc-grid" id="lcGrid"></div>
+      <div class="lc-legend">
+        <span>Less</span>
+        <div class="lc-leg-cell" style="background:var(--lc-empty)"></div>
+        <div class="lc-leg-cell" style="background:var(--lc1)"></div>
+        <div class="lc-leg-cell" style="background:var(--lc2)"></div>
+        <div class="lc-leg-cell" style="background:var(--lc3)"></div>
+        <div class="lc-leg-cell" style="background:var(--lc4)"></div>
+        <span>More</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ CONTACT ═══ -->
+<section class="wrap" id="contact">
+  <p class="sec-label" data-n="08">Contact</p>
+  <div class="contact-grid">
     <div class="reveal">
-      <div class="tl">
-        <div class="tl-item">
-          <div class="tl-date">Apr 2024</div>
-          <div class="tl-title">AWS Cloud Practitioner Essentials</div>
-          <div class="tl-org">Amazon Web Services (AWS) · Credential ID HR78Z2TKVKWY</div>
-          <div class="tl-desc">Foundational certification covering core AWS services, cloud concepts, pricing, security,
-            and architecture fundamentals.</div>
-          <div class="chips"><span class="chip">AWS</span><span class="chip">Cloud Fundamentals</span></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-date">Oct 2024</div>
-          <div class="tl-title">Google Cloud Computing Foundation with Kubernetes</div>
-          <div class="tl-org">Google Cloud Skills Boost · Credential ID 11810854</div>
-          <div class="tl-desc">Covered Google Cloud fundamentals with Kubernetes-based application deployment and
-            orchestration.</div>
-          <div class="chips"><span class="chip">GCP</span><span class="chip">Kubernetes</span></div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-date">Jun 2025</div>
-          <div class="tl-title">MCP: Build Rich-Context AI Apps with Anthropic</div>
-          <div class="tl-org">DeepLearning.AI</div>
-          <div class="tl-desc">Learned how to build rich-context AI applications using the Model Context Protocol and
-            Anthropic's ecosystem.</div>
-          <div class="chips"><span class="chip">MCP</span><span class="chip">Anthropic</span><span class="chip">AI
-              Apps</span></div>
-        </div>
+      <div class="contact-head">Let's build something<br><strong>remarkable.</strong></div>
+      <p class="contact-sub">Open to full-time roles, internships in Cloud Engineering, ML Engineering, or Software Engineering. Also available for research collaborations and open-source projects.</p>
+      <div class="clinks">
+        <a href="mailto:pururajdhama2004@gmail.com" class="clink">
+          <span class="clink-icon"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="3" width="12" height="9" rx="1.5"/><path d="M1 4l6 5 6-5"/></svg></span>
+          pururajdhama2004@gmail.com
+        </a>
+        <a href="https://github.com/heyitspuru" target="_blank" class="clink">
+          <span class="clink-icon"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 1C3.7 1 1 3.7 1 7c0 2.7 1.7 4.9 4.1 5.7.3.1.4-.1.4-.3v-1c-1.7.4-2-.8-2-.8-.3-.7-.7-.9-.7-.9-.5-.4 0-.4 0-.4.6 0 .9.6.9.6.5.9 1.4.6 1.7.5.1-.4.2-.6.4-.8-1.4-.1-2.8-.7-2.8-3 0-.7.2-1.2.6-1.7-.1-.1-.3-.7 0-1.5 0 0 .5-.2 1.7.6A5.7 5.7 0 017 4.4c.5 0 1 .1 1.5.2 1.2-.8 1.7-.6 1.7-.6.3.8.1 1.4 0 1.5.4.4.6 1 .6 1.7 0 2.4-1.4 2.9-2.8 3 .2.2.4.6.4 1.2v1.8c0 .2.1.4.4.3C11.3 11.9 13 9.7 13 7c0-3.3-2.7-6-6-6z"/></svg></span>
+          github.com/heyitspuru
+        </a>
+        <a href="https://www.linkedin.com/in/puru-raj-dhama-1d1616" target="_blank" class="clink">
+          <span class="clink-icon"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="1" width="12" height="12" rx="2"/><path d="M4 6v5M4 4v.5M7 11V8.5c0-1.4 2.5-1.5 2.5 0V11"/></svg></span>
+          linkedin.com/in/puru-raj-dhama
+        </a>
+        <a href="https://x.com/Dhama_16" target="_blank" class="clink">
+          <span class="clink-icon"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 2l10 10M12 2L2 12"/></svg></span>
+          x.com/Dhama_16
+        </a>
+        <a href="https://leetcode.com/u/Raj_0106" target="_blank" class="clink">
+          <span class="clink-icon"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 10l3-6 3 6M6.2 8h3.6"/></svg></span>
+          leetcode.com/u/Raj_0106
+        </a>
       </div>
     </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- ═══ PROJECTS ═══ -->
-  <section class="wrap" id="projects">
-    <p class="sec-label" data-n="05">Projects</p>
-    <h2 class="sec-title reveal">Things I've <strong>built.</strong></h2>
-    <div class="proj-grid reveal">
-      <div class="proj-card">
-        <div class="proj-n">001</div>
-        <div class="proj-title">AZURE-CLOUD — Azure labs &amp; proof-of-work repository</div>
-        <div class="proj-desc">A hands-on collection of Microsoft Azure labs, notes, and implementations demonstrating
-          core cloud concepts through practical, real-world scenarios. Covers compute, storage, networking,
-          identity/access, databases, and monitoring/security — built as a "proof of work" documenting applied cloud
-          skills.</div>
-        <div class="chips" style="margin-bottom:16px"><span class="chip">Microsoft Azure</span><span class="chip">Azure
-            AD / RBAC</span><span class="chip">Azure Networking &amp; Storage</span></div>
-        <div class="proj-links"><a href="https://github.com/heyitspuru/AZURE-CLOUD" target="_blank" class="proj-link">↗
-            GitHub</a></div>
+    <div class="form-box reveal">
+      <div class="f-row-2">
+        <div><label class="f-label">Name</label><input class="f-input" type="text" placeholder="Your name"></div>
+        <div><label class="f-label">Email</label><input class="f-input" type="email" placeholder="you@email.com"></div>
       </div>
-      <div class="proj-card">
-        <div class="proj-n">002</div>
-        <div class="proj-title">Yapo — Serverless blog app on AWS</div>
-        <div class="proj-desc">A modern serverless blog application with user sign-up/login and the ability to create,
-          view, and comment on posts via a protected authentication flow. Built end-to-end on AWS managed services, with
-          AI features including Text-to-Speech (Polly) and Translation (Translate) baked in.</div>
-        <div class="chips" style="margin-bottom:16px"><span class="chip">AWS Lambda</span><span class="chip">API
-            Gateway</span><span class="chip">DynamoDB + S3</span><span class="chip">AWS Cognito</span></div>
-        <div class="proj-links"><a href="https://github.com/heyitspuru/Yapo" target="_blank" class="proj-link">↗
-            GitHub</a></div>
-      </div>
-      <div class="proj-card">
-        <div class="proj-n">003</div>
-        <div class="proj-title">BottlelineClassification — Bottle fill-level image classification</div>
-        <div class="proj-desc">A deep-learning computer vision project that classifies bottle images as Underfilled,
-          Overfilled, or Normal to support automated industrial inspection. Trained a tuned custom CNN and a MobileNetV2
-          transfer-learning model, reaching ~98% accuracy vs a ~71% baseline — with evaluation reports and confusion
-          matrices. Published in IEEE.</div>
-        <div class="chips" style="margin-bottom:16px"><span class="chip">Python</span><span class="chip">TensorFlow /
-            Keras</span><span class="chip">MobileNetV2</span><span class="chip">OpenCV</span><span
-            class="chip">Scikit-learn</span></div>
-        <div class="proj-links"><a href="https://github.com/heyitspuru/Bottlelineclassification" target="_blank"
-            class="proj-link">↗ GitHub</a></div>
-      </div>
-      <div class="proj-card">
-        <div class="proj-n">004</div>
-        <div class="proj-title">malware-detection — Static malware classification</div>
-        <div class="proj-desc">A machine-learning system that classifies malware families using static-analysis features
-          extracted from PE files, DLL imports, and API calls. Implements an XGBoost pipeline with feature selection and
-          cross-validation achieving ~93% accuracy, plus a Streamlit demo for interactive predictions.</div>
-        <div class="chips" style="margin-bottom:16px"><span class="chip">Python</span><span
-            class="chip">XGBoost</span><span class="chip">Scikit-learn</span><span class="chip">Streamlit</span></div>
-        <div class="proj-links"><a href="https://github.com/heyitspuru/malware-detection" target="_blank"
-            class="proj-link">↗ GitHub</a></div>
-      </div>
+      <div class="f-row"><label class="f-label">Subject</label><input class="f-input" type="text" placeholder="What's this about?"></div>
+      <div class="f-row"><label class="f-label">Message</label><textarea class="f-textarea" placeholder="Tell me about the role, project, or collaboration..."></textarea></div>
+      <button class="f-submit" onclick="handleSubmit(this)">Send Message →</button>
     </div>
-  </section>
+  </div>
+</section>
 
-  <div class="divider"></div>
+<footer>
+  <span class="foot-copy">© 2025 Puru Raj Dhama — Greater Noida, India</span>
+  <span class="foot-copy">CS · Cloud · AI · Bennett University</span>
+</footer>
 
-  <!-- ═══ ACHIEVEMENTS ═══ -->
-  <section class="wrap" id="achievements">
-    <p class="sec-label" data-n="06">Achievements</p>
-    <h2 class="sec-title reveal">Recognition &amp; <strong>milestones.</strong></h2>
-    <div class="ach-grid reveal">
-      <div class="ach-card">
-        <div class="ach-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M8 1l2 4 4.5.7-3.2 3.1.75 4.4L8 11l-4 2.2.75-4.4L1.5 5.7 6 5z" />
-          </svg></div>
-        <span class="ach-yr">2025</span>
-        <div class="ach-title"> <a href="https://www.linkedin.com/safety/go/?url=https%3A%2F%2Flnkd.in%2Fg5nvjM2W&urlhash=y9Mr&mt=iaI4F_2EPhIQXbnkzCq_WH14FHm4jSeHAxVW3oYjR9zeayavNv5s0qVH7Y-OP2KlG1dDPCMD46qHJmXkpVgZQeYpcZywPnTX1DVZiDGi4JRyWCZjvVXcFUVsolE&isSdui=true&lipi=urn%3Ali%3Apage%3Ad_flagship3_detail_base%3BsG9sObn8SteSy%2FZpVH38Kg%3D%3D" target="_blank" style="text-decoration: none; color: inherit;">
-        IEEE Research Paper Publication
-    </a</div>
-        <div class="ach-desc">"Automated Detection of Bottle Fill Levels Using CNN and MobileNetV2" published in IEEE.
-        </div>
-      </div>
-      <div class="ach-card">
-        <div class="ach-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-            <rect x="1" y="4" width="14" height="10" rx="2" />
-            <path d="M5 4V3a2 2 0 014 0v1" />
-          </svg></div>
-        <span class="ach-yr">2025</span>
-        <div class="ach-title">Winner - Mined, Crest Data @ Nirma University</div>
-        <div class="ach-desc">Hackathon win for a solution focused on practical problem-solving and technical execution.
-        </div>
-      </div>
-      <div class="ach-card">
-        <div class="ach-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-            <circle cx="8" cy="8" r="7" />
-            <path d="M8 4v4l3 2" />
-          </svg></div>
-        <span class="ach-yr">2025</span>
-        <div class="ach-title">Finalist - Datathon by Analytika @ NMIMS</div>
-        <div class="ach-desc">Reached the finalist stage in a competitive datathon with a strong analytical and
-          implementation-focused submission.</div>
-      </div>
-    </div>
-  </section>
+<script>
+/* ═══════════════════════════════════════════════════
+   THEME
+═══════════════════════════════════════════════════ */
+const ROOT = document.documentElement;
+let DARK = false;
 
-  <div class="divider"></div>
+function applyTheme(dark) {
+  DARK = dark;
+  ROOT.setAttribute('data-theme', dark ? 'dark' : 'light');
+  document.getElementById('themeIcon').textContent  = dark ? '☽' : '☀';
+  document.getElementById('themeLabel').textContent = dark ? 'Dark' : 'Light';
+  document.querySelectorAll('.rc').forEach(el =>
+    el.setAttribute('fill', dark ? 'rgba(100,138,210,0.24)' : 'white')
+  );
+  rebuildHero();
+}
 
-  <!-- ═══ LEETCODE ═══ -->
-  <section class="wrap" id="leetcode">
-    <p class="sec-label" data-n="07">LeetCode</p>
-    <h2 class="sec-title reveal">Consistent <strong>practice.</strong></h2>
-    <div class="lc-card reveal">
-      <div class="lc-head">
-        <div class="lc-user">
-          <div class="lc-av">PR</div>
-          <div>
-            <div class="lc-uname">Raj_0106</div>
-            <div class="lc-rank" id="lc-rank-display">Loading profile…</div>
-          </div>
-        </div>
-        <div class="lc-stats">
-          <div class="lc-s">
-            <div class="lc-sn" id="lc-total">—</div>
-            <div class="lc-sl">Total Solved</div>
-          </div>
-          <div class="lc-s">
-            <div class="lc-sn easy" id="lc-easy">—</div>
-            <div class="lc-sl">Easy</div>
-          </div>
-          <div class="lc-s">
-            <div class="lc-sn med" id="lc-med">—</div>
-            <div class="lc-sl">Medium</div>
-          </div>
-          <div class="lc-s">
-            <div class="lc-sn hard" id="lc-hard">—</div>
-            <div class="lc-sl">Hard</div>
-          </div>
-          <div class="lc-s">
-            <div class="lc-sn" id="lc-ranking">—</div>
-            <div class="lc-sl">Global Rank</div>
-          </div>
-          <a href="https://leetcode.com/u/Raj_0106" target="_blank" class="lc-profile-link">↗ Profile</a>
-        </div>
-      </div>
-      <div class="lc-body">
-        <div class="lc-sub-label">Submission activity · Last 52 weeks</div>
-        <div class="lc-grid" id="lcGrid"></div>
-        <div class="lc-legend">
-          <span>Less</span>
-          <div class="lc-leg-cell" style="background:var(--lc-empty)"></div>
-          <div class="lc-leg-cell" style="background:var(--lc1)"></div>
-          <div class="lc-leg-cell" style="background:var(--lc2)"></div>
-          <div class="lc-leg-cell" style="background:var(--lc3)"></div>
-          <div class="lc-leg-cell" style="background:var(--lc4)"></div>
-          <span>More</span>
-        </div>
-      </div>
-    </div>
-  </section>
+document.getElementById('themeBtn').addEventListener('click', () => applyTheme(!DARK));
 
-  <div class="divider"></div>
+/* ═══════════════════════════════════════════════════
+   THREE.JS HERO — clouds, sun/moon, robots, stars
+═══════════════════════════════════════════════════ */
+(function () {
+  const canvas = document.getElementById('hero-canvas');
+  let renderer = null, camera = null, scene = null;
+  let skyMat = null;
+  let clouds = [], sunMoon = null, stars = null, rays = [];
+  let raf = null, t = 0;
+  let mx = 0, my = 0, cx = 0, cy = 0;
 
-  <!-- ═══ CONTACT ═══ -->
-  <section class="wrap" id="contact">
-    <p class="sec-label" data-n="08">Contact</p>
-    <div class="contact-grid">
-      <div class="reveal">
-        <div class="contact-head">Let's build something<br><strong>remarkable.</strong></div>
-        <p class="contact-sub">Open to full-time roles, internships in Cloud Engineering, ML Engineering, or Software
-          Engineering. Also available for research collaborations and open-source projects.</p>
-        <div class="clinks">
-          <a href="mailto:pururajdhama2004@gmail.com" class="clink">
-            <span class="clink-icon"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4">
-                <rect x="1" y="3" width="12" height="9" rx="1.5" />
-                <path d="M1 4l6 5 6-5" />
-              </svg></span>
-            pururajdhama2004@gmail.com
-          </a>
-          <a href="https://github.com/heyitspuru" target="_blank" class="clink">
-            <span class="clink-icon"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4">
-                <path
-                  d="M7 1C3.7 1 1 3.7 1 7c0 2.7 1.7 4.9 4.1 5.7.3.1.4-.1.4-.3v-1c-1.7.4-2-.8-2-.8-.3-.7-.7-.9-.7-.9-.5-.4 0-.4 0-.4.6 0 .9.6.9.6.5.9 1.4.6 1.7.5.1-.4.2-.6.4-.8-1.4-.1-2.8-.7-2.8-3 0-.7.2-1.2.6-1.7-.1-.1-.3-.7 0-1.5 0 0 .5-.2 1.7.6A5.7 5.7 0 017 4.4c.5 0 1 .1 1.5.2 1.2-.8 1.7-.6 1.7-.6.3.8.1 1.4 0 1.5.4.4.6 1 .6 1.7 0 2.4-1.4 2.9-2.8 3 .2.2.4.6.4 1.2v1.8c0 .2.1.4.4.3C11.3 11.9 13 9.7 13 7c0-3.3-2.7-6-6-6z" />
-              </svg></span>
-            github.com/heyitspuru
-          </a>
-          <a href="https://www.linkedin.com/in/puru-raj-dhama-1d1616" target="_blank" class="clink">
-            <span class="clink-icon"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4">
-                <rect x="1" y="1" width="12" height="12" rx="2" />
-                <path d="M4 6v5M4 4v.5M7 11V8.5c0-1.4 2.5-1.5 2.5 0V11" />
-              </svg></span>
-            linkedin.com/in/puru-raj-dhama
-          </a>
-          <a href="https://x.com/Dhama_16" target="_blank" class="clink">
-            <span class="clink-icon"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4">
-                <path d="M2 2l10 10M12 2L2 12" />
-              </svg></span>
-            x.com/Dhama_16
-          </a>
-          <a href="https://leetcode.com/u/Raj_0106" target="_blank" class="clink">
-            <span class="clink-icon"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4">
-                <path d="M5 10l3-6 3 6M6.2 8h3.6" />
-              </svg></span>
-            leetcode.com/u/Raj_0106
-          </a>
-        </div>
-      </div>
-      <div class="form-box reveal">
-        <div class="f-row-2">
-          <div><label class="f-label">Name</label><input class="f-input" type="text" placeholder="Your name"></div>
-          <div><label class="f-label">Email</label><input class="f-input" type="email" placeholder="you@email.com">
-          </div>
-        </div>
-        <div class="f-row"><label class="f-label">Subject</label><input class="f-input" type="text"
-            placeholder="What's this about?"></div>
-        <div class="f-row"><label class="f-label">Message</label><textarea class="f-textarea"
-            placeholder="Tell me about the role, project, or collaboration..."></textarea></div>
-        <button class="f-submit" onclick="handleSubmit(this)">Send Message →</button>
-      </div>
-    </div>
-  </section>
+  function boot() {
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(innerWidth, innerHeight);
+    camera = new THREE.PerspectiveCamera(58, innerWidth / innerHeight, 0.1, 1000);
+    camera.position.z = 32;
+  }
 
-  <footer>
-    <span class="foot-copy">© 2025 Puru Raj Dhama — Greater Noida, India</span>
-    <span class="foot-copy">CS · Cloud · AI · Bennett University</span>
-  </footer>
+  /* Cloud texture — correct ellipse puff method */
+  function cloudTex(dark) {
+    const W = 512, H = 256;
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const ctx = cv.getContext('2d');
 
-  <script>
-    /* ═══════════════════════════════════════════════════
-       THEME
-    ═══════════════════════════════════════════════════ */
-    const ROOT = document.documentElement;
-    let DARK = false;
-
-    function applyTheme(dark) {
-      DARK = dark;
-      ROOT.setAttribute('data-theme', dark ? 'dark' : 'light');
-      document.getElementById('themeIcon').textContent = dark ? '☽' : '☀';
-      document.getElementById('themeLabel').textContent = dark ? 'Dark' : 'Light';
-      document.querySelectorAll('.rc').forEach(el =>
-        el.setAttribute('fill', dark ? 'rgba(100,138,210,0.24)' : 'white')
-      );
-      rebuildHero();
+    function puff(pcx, pcy, rx, ry, a) {
+      ctx.save();
+      ctx.translate(pcx, pcy);
+      ctx.scale(1.0, ry / rx);
+      const g = ctx.createRadialGradient(0, 0, 0, 0, 0, rx);
+      const rgb = dark ? '145,175,225' : '255,255,255';
+      g.addColorStop(0,    `rgba(${rgb},${a})`);
+      g.addColorStop(0.46, `rgba(${rgb},${(a * 0.56).toFixed(2)})`);
+      g.addColorStop(1,    `rgba(${rgb},0)`);
+      ctx.beginPath();
+      ctx.arc(0, 0, rx, 0, Math.PI * 2);
+      ctx.fillStyle = g;
+      ctx.fill();
+      ctx.restore();
     }
 
-    document.getElementById('themeBtn').addEventListener('click', () => applyTheme(!DARK));
+    const A = dark ? 0.82 : 1.0;
+    puff(W*.50, H*.50, W*.35, H*.30, A);
+    puff(W*.27, H*.54, W*.22, H*.22, A*.88);
+    puff(W*.73, H*.50, W*.23, H*.22, A*.90);
+    puff(W*.50, H*.33, W*.27, H*.20, A*.72);
+    puff(W*.13, H*.50, W*.17, H*.17, A*.62);
+    puff(W*.87, H*.55, W*.18, H*.17, A*.65);
+    puff(W*.50, H*.72, W*.29, H*.20, A*.55);
+    return new THREE.CanvasTexture(cv);
+  }
 
-    /* ═══════════════════════════════════════════════════
-       THREE.JS HERO — clouds, sun/moon, robots, stars
-    ═══════════════════════════════════════════════════ */
-    (function () {
-      const canvas = document.getElementById('hero-canvas');
-      let renderer = null, camera = null, scene = null;
-      let skyMat = null;
-      let clouds = [], sunMoon = null, stars = null, rays = [];
-      let raf = null, t = 0;
-      let mx = 0, my = 0, cx = 0, cy = 0;
+  function clearDynamic() {
+    clouds.forEach(o => { scene.remove(o.m); o.m.geometry.dispose(); o.m.material.dispose(); });
+    clouds = [];
+    rays.forEach(r => { scene.remove(r); r.geometry.dispose(); r.material.dispose(); });
+    rays = [];
+    if (sunMoon) { scene.remove(sunMoon); sunMoon.geometry.dispose(); sunMoon.material.dispose(); sunMoon = null; }
+    if (stars)   { scene.remove(stars);   stars.geometry.dispose();   stars.material.dispose();   stars = null; }
+  }
 
-      function boot() {
-        renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
-        renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-        renderer.setSize(innerWidth, innerHeight);
-        camera = new THREE.PerspectiveCamera(58, innerWidth / innerHeight, 0.1, 1000);
-        camera.position.z = 32;
-      }
+  function buildDynamic(dark) {
+    const texL = cloudTex(dark);
+    const texS = cloudTex(dark);
 
-      /* Cloud texture — correct ellipse puff method */
-      function cloudTex(dark) {
-        const W = 512, H = 256;
-        const cv = document.createElement('canvas');
-        cv.width = W; cv.height = H;
-        const ctx = cv.getContext('2d');
+    function spawn(x, y, z, sx, sy, op, spd) {
+      const m = new THREE.Mesh(
+        new THREE.PlaneGeometry(1, 1),
+        new THREE.MeshBasicMaterial({ map: op > .5 ? texL : texS, transparent: true, opacity: op, depthWrite: false, side: THREE.DoubleSide })
+      );
+      m.scale.set(sx, sy, 1);
+      m.position.set(x, y, z);
+      m.rotation.z = (Math.random() - .5) * .06;
+      scene.add(m);
+      clouds.push({ m, spd, baseY: y, amp: .08 + Math.random() * .10, freq: .20 + Math.random() * .25, ph: Math.random() * Math.PI * 2 });
+    }
 
-        function puff(pcx, pcy, rx, ry, a) {
-          ctx.save();
-          ctx.translate(pcx, pcy);
-          ctx.scale(1.0, ry / rx);
-          const g = ctx.createRadialGradient(0, 0, 0, 0, 0, rx);
-          const rgb = dark ? '145,175,225' : '255,255,255';
-          g.addColorStop(0, `rgba(${rgb},${a})`);
-          g.addColorStop(0.46, `rgba(${rgb},${(a * 0.56).toFixed(2)})`);
-          g.addColorStop(1, `rgba(${rgb},0)`);
-          ctx.beginPath();
-          ctx.arc(0, 0, rx, 0, Math.PI * 2);
-          ctx.fillStyle = g;
-          ctx.fill();
-          ctx.restore();
-        }
+    /* Three cloud depth layers */
+    for (let i = 0; i < 8; i++)
+      spawn((Math.random()-.5)*100, (Math.random()-.5)*10-3, -32-Math.random()*16,
+            10+Math.random()*7, 4.5+Math.random()*3, dark?.32:.84, .0018+Math.random()*.0018);
+    for (let i = 0; i < 11; i++)
+      spawn((Math.random()-.5)*80, (Math.random()-.5)*10, -18-Math.random()*10,
+            7+Math.random()*5, 3+Math.random()*2.5, dark?.40:.92, .0048+Math.random()*.004);
+    for (let i = 0; i < 8; i++)
+      spawn((Math.random()-.5)*64, (Math.random()-.5)*8, -5-Math.random()*8,
+            5+Math.random()*4, 2.5+Math.random()*2, dark?.50:.98, .009+Math.random()*.006);
 
-        const A = dark ? 0.82 : 1.0;
-        puff(W * .50, H * .50, W * .35, H * .30, A);
-        puff(W * .27, H * .54, W * .22, H * .22, A * .88);
-        puff(W * .73, H * .50, W * .23, H * .22, A * .90);
-        puff(W * .50, H * .33, W * .27, H * .20, A * .72);
-        puff(W * .13, H * .50, W * .17, H * .17, A * .62);
-        puff(W * .87, H * .55, W * .18, H * .17, A * .65);
-        puff(W * .50, H * .72, W * .29, H * .20, A * .55);
-        return new THREE.CanvasTexture(cv);
-      }
+    /* Sun (light) or Moon (dark) */
+    sunMoon = new THREE.Mesh(
+      new THREE.CircleGeometry(dark ? 2.8 : 4.4, 64),
+      new THREE.MeshBasicMaterial({ color: dark ? 0xd4b87a : 0xffe040, transparent: true, opacity: dark ? .95 : 1.0 })
+    );
+    sunMoon.position.set(20, 12, -36);
+    scene.add(sunMoon);
 
-      function clearDynamic() {
-        clouds.forEach(o => { scene.remove(o.m); o.m.geometry.dispose(); o.m.material.dispose(); });
-        clouds = [];
-        rays.forEach(r => { scene.remove(r); r.geometry.dispose(); r.material.dispose(); });
-        rays = [];
-        if (sunMoon) { scene.remove(sunMoon); sunMoon.geometry.dispose(); sunMoon.material.dispose(); sunMoon = null; }
-        if (stars) { scene.remove(stars); stars.geometry.dispose(); stars.material.dispose(); stars = null; }
-      }
-
-      function buildDynamic(dark) {
-        const texL = cloudTex(dark);
-        const texS = cloudTex(dark);
-
-        function spawn(x, y, z, sx, sy, op, spd) {
-          const m = new THREE.Mesh(
-            new THREE.PlaneGeometry(1, 1),
-            new THREE.MeshBasicMaterial({ map: op > .5 ? texL : texS, transparent: true, opacity: op, depthWrite: false, side: THREE.DoubleSide })
-          );
-          m.scale.set(sx, sy, 1);
-          m.position.set(x, y, z);
-          m.rotation.z = (Math.random() - .5) * .06;
-          scene.add(m);
-          clouds.push({ m, spd, baseY: y, amp: .08 + Math.random() * .10, freq: .20 + Math.random() * .25, ph: Math.random() * Math.PI * 2 });
-        }
-
-        /* Three cloud depth layers */
-        for (let i = 0; i < 8; i++)
-          spawn((Math.random() - .5) * 100, (Math.random() - .5) * 10 - 3, -32 - Math.random() * 16,
-            10 + Math.random() * 7, 4.5 + Math.random() * 3, dark ? .32 : .84, .0018 + Math.random() * .0018);
-        for (let i = 0; i < 11; i++)
-          spawn((Math.random() - .5) * 80, (Math.random() - .5) * 10, -18 - Math.random() * 10,
-            7 + Math.random() * 5, 3 + Math.random() * 2.5, dark ? .40 : .92, .0048 + Math.random() * .004);
-        for (let i = 0; i < 8; i++)
-          spawn((Math.random() - .5) * 64, (Math.random() - .5) * 8, -5 - Math.random() * 8,
-            5 + Math.random() * 4, 2.5 + Math.random() * 2, dark ? .50 : .98, .009 + Math.random() * .006);
-
-        /* Sun (light) or Moon (dark) */
-        sunMoon = new THREE.Mesh(
-          new THREE.CircleGeometry(dark ? 2.8 : 4.4, 64),
-          new THREE.MeshBasicMaterial({ color: dark ? 0xd4b87a : 0xffe040, transparent: true, opacity: dark ? .95 : 1.0 })
+    /* Sun rays */
+    if (!dark) {
+      for (let i = 0; i < 14; i++) {
+        const angle = (i / 14) * Math.PI * 2;
+        const len = 1.8 + (i % 3) * .55;
+        const r = new THREE.Mesh(
+          new THREE.PlaneGeometry(.18, len),
+          new THREE.MeshBasicMaterial({ color: 0xffe040, transparent: true, opacity: .22, depthWrite: false })
         );
-        sunMoon.position.set(20, 12, -36);
-        scene.add(sunMoon);
-
-        /* Sun rays */
-        if (!dark) {
-          for (let i = 0; i < 14; i++) {
-            const angle = (i / 14) * Math.PI * 2;
-            const len = 1.8 + (i % 3) * .55;
-            const r = new THREE.Mesh(
-              new THREE.PlaneGeometry(.18, len),
-              new THREE.MeshBasicMaterial({ color: 0xffe040, transparent: true, opacity: .22, depthWrite: false })
-            );
-            r.position.set(20 + Math.cos(angle) * (4.4 + len / 2 + .3), 12 + Math.sin(angle) * (4.4 + len / 2 + .3), -36);
-            r.rotation.z = angle + Math.PI / 2;
-            scene.add(r);
-            rays.push(r);
-          }
-        }
-
-        /* Stars */
-        if (dark) {
-          const geo = new THREE.BufferGeometry();
-          const pos = [];
-          for (let i = 0; i < 900; i++) {
-            const theta = Math.random() * Math.PI * 2;
-            const phi = Math.acos(1 - Math.random() * .96);
-            const r = 360 + Math.random() * 40;
-            pos.push(r * Math.sin(phi) * Math.cos(theta), r * Math.cos(phi), r * Math.sin(phi) * Math.sin(theta));
-          }
-          geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-          stars = new THREE.Points(geo, new THREE.PointsMaterial({ color: 0xffffff, size: 1.6, transparent: true, opacity: .88 }));
-          scene.add(stars);
-        }
+        r.position.set(20 + Math.cos(angle) * (4.4 + len/2 + .3), 12 + Math.sin(angle) * (4.4 + len/2 + .3), -36);
+        r.rotation.z = angle + Math.PI / 2;
+        scene.add(r);
+        rays.push(r);
       }
+    }
 
-      function ensureSky(dark) {
-        if (skyMat) { skyMat.uniforms.uDark.value = dark ? 1.0 : 0.0; return; }
-        skyMat = new THREE.ShaderMaterial({
-          side: THREE.BackSide,
-          uniforms: { uT: { value: 0 }, uDark: { value: dark ? 1.0 : 0.0 } },
-          vertexShader: `varying vec3 vP; void main(){ vP=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
-          fragmentShader: `
+    /* Stars */
+    if (dark) {
+      const geo = new THREE.BufferGeometry();
+      const pos = [];
+      for (let i = 0; i < 900; i++) {
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(1 - Math.random() * .96);
+        const r = 360 + Math.random() * 40;
+        pos.push(r*Math.sin(phi)*Math.cos(theta), r*Math.cos(phi), r*Math.sin(phi)*Math.sin(theta));
+      }
+      geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+      stars = new THREE.Points(geo, new THREE.PointsMaterial({ color: 0xffffff, size: 1.6, transparent: true, opacity: .88 }));
+      scene.add(stars);
+    }
+  }
+
+  function ensureSky(dark) {
+    if (skyMat) { skyMat.uniforms.uDark.value = dark ? 1.0 : 0.0; return; }
+    skyMat = new THREE.ShaderMaterial({
+      side: THREE.BackSide,
+      uniforms: { uT: { value: 0 }, uDark: { value: dark ? 1.0 : 0.0 } },
+      vertexShader: `varying vec3 vP; void main(){ vP=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+      fragmentShader: `
         varying vec3 vP; uniform float uT, uDark;
         void main(){
           float y=clamp((vP.y+500.)/1000.,0.,1.);
@@ -2022,209 +885,201 @@
           gl_FragColor=vec4(col,1.);
         }
       `,
-        });
-        scene.add(new THREE.Mesh(new THREE.SphereGeometry(500, 32, 16), skyMat));
-      }
+    });
+    scene.add(new THREE.Mesh(new THREE.SphereGeometry(500, 32, 16), skyMat));
+  }
 
-      window.rebuildHero = function () {
-        if (raf) { cancelAnimationFrame(raf); raf = null; }
-        if (!renderer) boot();
-        if (!scene) scene = new THREE.Scene();
-        ensureSky(DARK);
-        clearDynamic();
-        buildDynamic(DARK);
+  window.rebuildHero = function () {
+    if (raf) { cancelAnimationFrame(raf); raf = null; }
+    if (!renderer) boot();
+    if (!scene) scene = new THREE.Scene();
+    ensureSky(DARK);
+    clearDynamic();
+    buildDynamic(DARK);
 
-        function tick() {
-          raf = requestAnimationFrame(tick);
-          t += .016;
-          skyMat.uniforms.uT.value = t;
-          cx += (mx - cx) * .045;
-          cy += (my - cy) * .045;
-          camera.position.x = cx * 2.4;
-          camera.position.y = cy * 1.3;
-          camera.lookAt(0, 0, 0);
-          clouds.forEach(o => {
-            o.m.position.x -= o.spd;
-            if (o.m.position.x < -74) { o.m.position.x = 74 + Math.random() * 10; o.m.position.y = o.baseY + (Math.random() - .5) * 5; }
-            o.m.position.y = o.baseY + Math.sin(t * o.freq + o.ph) * o.amp;
-          });
-          if (stars) stars.rotation.y = t * .0022;
-          rays.forEach((r, i) => { r.material.opacity = .15 + Math.sin(t * .7 + i * .38) * .08; });
-          renderer.render(scene, camera);
-        }
-        tick();
-      };
-
-      window.addEventListener('mousemove', e => {
-        mx = (e.clientX / innerWidth - .5) * 2;
-        my = (e.clientY / innerHeight - .5) * -2;
+    function tick() {
+      raf = requestAnimationFrame(tick);
+      t += .016;
+      skyMat.uniforms.uT.value = t;
+      cx += (mx - cx) * .045;
+      cy += (my - cy) * .045;
+      camera.position.x = cx * 2.4;
+      camera.position.y = cy * 1.3;
+      camera.lookAt(0, 0, 0);
+      clouds.forEach(o => {
+        o.m.position.x -= o.spd;
+        if (o.m.position.x < -74) { o.m.position.x = 74 + Math.random() * 10; o.m.position.y = o.baseY + (Math.random()-.5)*5; }
+        o.m.position.y = o.baseY + Math.sin(t * o.freq + o.ph) * o.amp;
       });
-      window.addEventListener('resize', () => {
-        if (!renderer) return;
-        renderer.setSize(innerWidth, innerHeight);
-        camera.aspect = innerWidth / innerHeight;
-        camera.updateProjectionMatrix();
-      });
+      if (stars) stars.rotation.y = t * .0022;
+      rays.forEach((r, i) => { r.material.opacity = .15 + Math.sin(t * .7 + i * .38) * .08; });
+      renderer.render(scene, camera);
+    }
+    tick();
+  };
 
-      rebuildHero();
-    })();
+  window.addEventListener('mousemove', e => {
+    mx = (e.clientX / innerWidth  - .5) *  2;
+    my = (e.clientY / innerHeight - .5) * -2;
+  });
+  window.addEventListener('resize', () => {
+    if (!renderer) return;
+    renderer.setSize(innerWidth, innerHeight);
+    camera.aspect = innerWidth / innerHeight;
+    camera.updateProjectionMatrix();
+  });
 
-    /* ═══════════════════════════════════════════════════
-       LEETCODE — Live API fetch (alfa-leetcode-api)
-    ═══════════════════════════════════════════════════ */
-    (function () {
-      const USER = 'Raj_0106';
-      const BASE = 'https://alfa-leetcode-api.onrender.com';
+  rebuildHero();
+})();
 
-      /* Build heatmap grid from a 371-element array of daily submission counts */
-      function buildGrid(submissionsPerDay) {
-        const grid = document.getElementById('lcGrid');
-        if (!grid) return;
-        grid.innerHTML = '';
-        for (let w = 0; w < 53; w++) {
-          for (let d = 0; d < 7; d++) {
-            const cell = document.createElement('div');
-            cell.className = 'lc-cell';
-            let v = 0;
-            if (submissionsPerDay && Array.isArray(submissionsPerDay)) {
-              const cnt = submissionsPerDay[w * 7 + d] || 0;
-              v = Math.min(cnt / 8, 1); /* normalise: 8+ subs = max colour */
-            } else {
-              /* fallback: recency-weighted random pattern */
-              const recency = w / 52;
-              v = Math.random() * recency * .72 + (Math.random() > .62 ? Math.random() * .44 : 0);
-            }
-            if (v > .62) cell.classList.add('l4');
-            else if (v > .44) cell.classList.add('l3');
-            else if (v > .26) cell.classList.add('l2');
-            else if (v > .12) cell.classList.add('l1');
-            grid.appendChild(cell);
-          }
+/* ═══════════════════════════════════════════════════
+   LEETCODE — Live API fetch
+═══════════════════════════════════════════════════ */
+(function () {
+  const USER = 'Raj_0106';
+
+  /* Submission grid — generated locally (realistic pattern) */
+  function buildGrid(submissionsPerDay) {
+    const grid = document.getElementById('lcGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    /* submissionsPerDay is an object keyed by timestamp if available, else use fallback */
+    for (let w = 0; w < 53; w++) {
+      for (let d = 0; d < 7; d++) {
+        const cell = document.createElement('div');
+        cell.className = 'lc-cell';
+        /* Use real data if available, else simulate with recency weighting */
+        let v = 0;
+        if (submissionsPerDay && Array.isArray(submissionsPerDay) && submissionsPerDay[w * 7 + d] !== undefined) {
+          v = Math.min(submissionsPerDay[w * 7 + d] / 10, 1);
+        } else {
+          const recency = w / 52;
+          v = Math.random() * recency * .72 + (Math.random() > .62 ? Math.random() * .44 : 0);
         }
+        if      (v > .62) cell.classList.add('l4');
+        else if (v > .44) cell.classList.add('l3');
+        else if (v > .26) cell.classList.add('l2');
+        else if (v > .12) cell.classList.add('l1');
+        grid.appendChild(cell);
       }
+    }
+  }
 
-      function setEl(id, val) {
-        const el = document.getElementById(id);
-        if (el && val !== undefined && val !== null) el.textContent = val;
-      }
+  function setEl(id, val) {
+    const el = document.getElementById(id);
+    if (el && val !== undefined && val !== null) el.textContent = val;
+  }
 
-      /* Convert { "timestamp": count } calendar object to 371-element array */
-      function processCalendar(calRaw) {
-        /* The API returns submissionCalendar as a JSON-encoded string — parse it */
-        let cal = calRaw;
-        if (typeof cal === 'string') {
-          try { cal = JSON.parse(cal); } catch (_) { return null; }
+  async function fetchLC() {
+    /* Primary API */
+    const APIS = [
+      `https://alfa-leetcode-api.onrender.com/${USER}`,
+      `https://leetcode-stats-api.herokuapp.com/${USER}`,
+    ];
+
+    for (const url of APIS) {
+      try {
+        const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
+        if (!res.ok) continue;
+        const d = await res.json();
+
+        /* alfa-leetcode-api shape */
+        if (d.totalSolved !== undefined) {
+          setEl('lc-total', d.totalSolved);
+          setEl('lc-total-stat', d.totalSolved);
+          setEl('lc-easy',  d.easySolved  ?? d.totalEasy);
+          setEl('lc-med',   d.mediumSolved ?? d.totalMedium);
+          setEl('lc-hard',  d.hardSolved  ?? d.totalHard);
+          if (d.ranking) setEl('lc-ranking', '#' + Number(d.ranking).toLocaleString());
+          setEl('lc-rank-display', d.ranking ? `Global Rank #${Number(d.ranking).toLocaleString()}` : 'leetcode.com/u/Raj_0106');
+          buildGrid(d.submissionCalendar ? processCalendar(d.submissionCalendar) : null);
+          return;
         }
-        const now = Math.floor(Date.now() / 1000);
-        const startTs = now - 52 * 7 * 86400; /* 52 weeks ago */
-        const arr = new Array(371).fill(0);
-        Object.entries(cal).forEach(([ts, cnt]) => {
-          const diff = Math.floor((Number(ts) - startTs) / 86400);
-          if (diff >= 0 && diff < 371) arr[diff] = Number(cnt);
-        });
-        return arr;
-      }
-
-      async function safeFetch(url, timeout = 8000) {
-        const res = await fetch(url, { signal: AbortSignal.timeout(timeout) });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.json();
-      }
-
-      async function fetchLC() {
-        try {
-          /* Fetch solved stats and calendar in parallel */
-          const [solved, calData] = await Promise.allSettled([
-            safeFetch(`${BASE}/${USER}/solved`),
-            safeFetch(`${BASE}/${USER}/calendar`),
-          ]);
-
-          /* ── Solved stats ── */
-          if (solved.status === 'fulfilled') {
-            const s = solved.value;
-            /* /solved endpoint fields: solvedProblem, easySolved, mediumSolved, hardSolved */
-            const total = s.solvedProblem ?? s.totalSolved ?? null;
-            const easy = s.easySolved ?? null;
-            const medium = s.mediumSolved ?? null;
-            const hard = s.hardSolved ?? null;
-            if (total !== null) {
-              setEl('lc-total', total);
-              setEl('lc-total-stat', total);
-              setEl('lc-easy', easy);
-              setEl('lc-med', medium);
-              setEl('lc-hard', hard);
-            }
-          }
-
-          /* ── Calendar / activity ── */
-          if (calData.status === 'fulfilled') {
-            const c = calData.value;
-            /* Show streak if available */
-            if (c.streak) {
-              setEl('lc-rank-display', `🔥 ${c.streak}-day streak · leetcode.com/u/${USER}`);
-            }
-            buildGrid(c.submissionCalendar ? processCalendar(c.submissionCalendar) : null);
-          } else {
-            buildGrid(null);
-          }
-
-          /* ── Profile (ranking) — optional, non-blocking ── */
-          safeFetch(`${BASE}/${USER}`).then(p => {
-            if (p.ranking) {
-              setEl('lc-ranking', '#' + Number(p.ranking).toLocaleString());
-              /* Only override rank-display if streak wasn't set */
-              const rd = document.getElementById('lc-rank-display');
-              if (rd && !rd.textContent.includes('streak')) {
-                rd.textContent = `Global Rank #${Number(p.ranking).toLocaleString()}`;
-              }
-            }
-          }).catch(() => { });
-
-        } catch (err) {
-          /* All failed — show fallback grid */
-          console.warn('LeetCode API unavailable:', err);
+        /* leetcode-stats-api shape */
+        if (d.totalSolved !== undefined || d.totalQuestions !== undefined) {
+          setEl('lc-total', d.totalSolved);
+          setEl('lc-total-stat', d.totalSolved);
+          setEl('lc-easy',  d.easySolved);
+          setEl('lc-med',   d.mediumSolved);
+          setEl('lc-hard',  d.hardSolved);
+          setEl('lc-ranking', d.ranking ? '#' + Number(d.ranking).toLocaleString() : '—');
           setEl('lc-rank-display', 'leetcode.com/u/Raj_0106');
           buildGrid(null);
+          return;
         }
-      }
-
-      fetchLC();
-    })();
-
-    /* ═══════════════════════════════════════════════════
-       CONTACT FORM — mailto fallback
-    ═══════════════════════════════════════════════════ */
-    function handleSubmit(btn) {
-      const form = btn.closest('.form-box');
-      const name = form.querySelector('input[type="text"]').value.trim();
-      const email = form.querySelector('input[type="email"]').value.trim();
-      const subject = form.querySelectorAll('input[type="text"]')[1]?.value.trim() || 'Portfolio Enquiry';
-      const msg = form.querySelector('textarea').value.trim();
-      if (!name || !email || !msg) { alert('Please fill in all fields.'); return; }
-      const mailto = `mailto:pururajdhama2004@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Hi Puru,\n\n${msg}\n\n— ${name} (${email})`)}`;
-      window.location.href = mailto;
+      } catch (_) { /* try next */ }
     }
 
-    /* ═══════════════════════════════════════════════════
-       SCROLL REVEAL
-    ═══════════════════════════════════════════════════ */
-    const revObs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revObs.unobserve(e.target); } });
-    }, { threshold: .08, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+    /* All APIs failed — use realistic placeholder */
+    setEl('lc-rank-display', 'leetcode.com/u/Raj_0106');
+    buildGrid(null);
+  }
 
-    /* ═══════════════════════════════════════════════════
-       ACTIVE NAV
-    ═══════════════════════════════════════════════════ */
-    const navAs = document.querySelectorAll('.nav-links a');
-    const secObs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting)
-          navAs.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
-      });
-    }, { threshold: .42 });
-    document.querySelectorAll('section[id]').forEach(s => secObs.observe(s));
-  </script>
+  function processCalendar(cal) {
+    /* cal is an object: { "timestamp": count } — map to 371-length array (53×7) */
+    const now = Math.floor(Date.now() / 1000);
+    const startTs = now - 52 * 7 * 86400;
+    const arr = new Array(371).fill(0);
+    Object.entries(cal).forEach(([ts, cnt]) => {
+      const diff = Math.floor((Number(ts) - startTs) / 86400);
+      if (diff >= 0 && diff < 371) arr[diff] = Number(cnt);
+    });
+    return arr;
+  }
+
+  fetchLC();
+})();
+
+/* ═══════════════════════════════════════════════════
+   CONTACT FORM — mailto fallback
+═══════════════════════════════════════════════════ */
+function handleSubmit(btn) {
+  const form = btn.closest('.form-box');
+  const name    = form.querySelector('input[type="text"]').value.trim();
+  const email   = form.querySelector('input[type="email"]').value.trim();
+  const subject = form.querySelectorAll('input[type="text"]')[1]?.value.trim() || 'Portfolio Enquiry';
+  const msg     = form.querySelector('textarea').value.trim();
+  if (!name || !email || !msg) { alert('Please fill in all fields.'); return; }
+  const mailto = `mailto:pururajdhama2004@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Hi Puru,\n\n${msg}\n\n— ${name} (${email})`)}`;
+  window.location.href = mailto;
+}
+
+/* ═══════════════════════════════════════════════════
+   HAMBURGER MENU
+═══════════════════════════════════════════════════ */
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  const open = mobileMenu.classList.toggle('open');
+  hamburger.classList.toggle('open', open);
+});
+function closeMobile() {
+  mobileMenu.classList.remove('open');
+  hamburger.classList.remove('open');
+}
+document.addEventListener('click', e => {
+  if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) closeMobile();
+});
+
+/* ═══════════════════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════════════════ */
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revObs.unobserve(e.target); } });
+}, { threshold: .08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+
+/* ═══════════════════════════════════════════════════
+   ACTIVE NAV — lower threshold works better with 8 short sections
+═══════════════════════════════════════════════════ */
+const navAs = document.querySelectorAll('.nav-links a');
+const secObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting)
+      navAs.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+  });
+}, { threshold: 0.22, rootMargin: '-58px 0px -40% 0px' });
+document.querySelectorAll('section[id]').forEach(s => secObs.observe(s));
+</script>
 </body>
-
 </html>
