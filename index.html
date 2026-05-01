@@ -32,11 +32,21 @@ body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);color
 nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:58px;background:var(--nav-bg);border-bottom:1px solid var(--border);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transition:background var(--tr),border-color var(--tr)}
 .nav-logo{font-family:'DM Mono',monospace;font-size:13px;font-weight:400;letter-spacing:.04em;color:var(--text);text-decoration:none}
 .nav-logo span{color:var(--accent)}
-.nav-links{display:flex;gap:18px;list-style:none;align-items:center;overflow:hidden}
+.nav-links{display:flex;gap:18px;list-style:none;align-items:center}
 .nav-links a{font-size:11px;letter-spacing:.04em;color:var(--text3);text-decoration:none;transition:color .2s;font-weight:400;white-space:nowrap}
 .nav-links a:hover,.nav-links a.active{color:var(--text)}
 .theme-btn{display:flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);cursor:pointer;background:none;border:1px solid var(--border2);border-radius:4px;padding:5px 10px;transition:color .2s,border-color .2s}
 .theme-btn:hover{color:var(--text);border-color:var(--accent)}
+.nav-hamburger{display:none;flex-direction:column;gap:4.5px;cursor:pointer;background:none;border:none;padding:6px}
+.nav-hamburger span{display:block;width:20px;height:1.5px;background:var(--text);border-radius:2px;transition:all .25s ease}
+.nav-hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.nav-hamburger.open span:nth-child(2){opacity:0}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+.nav-mobile-menu{display:none;position:fixed;top:58px;left:0;right:0;z-index:199;background:var(--nav-bg);border-bottom:1px solid var(--border);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);padding:16px 20px;flex-direction:column;gap:0}
+.nav-mobile-menu.open{display:flex}
+.nav-mobile-menu a{font-size:13px;letter-spacing:.06em;color:var(--text2);text-decoration:none;padding:11px 0;border-bottom:1px solid var(--border);transition:color .2s;font-weight:400}
+.nav-mobile-menu a:last-child{border-bottom:none}
+.nav-mobile-menu a:hover{color:var(--accent)}
 
 /* ── HERO ── */
 #hero{position:relative;width:100%;height:100vh;min-height:640px;overflow:hidden}
@@ -84,7 +94,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .divider{width:100%;height:1px;background:var(--border)}
 
 /* ── SECTIONS ── */
-section.wrap{padding:96px 80px;max-width:1200px;margin:0 auto;scroll-margin-top:58px}
+section.wrap{padding:96px 80px;max-width:1200px;margin:0 auto}
 .sec-label{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:14px}
 .sec-label::before{content:attr(data-n);color:var(--text3);font-size:9px}
 .sec-title{font-size:clamp(28px,4vw,48px);font-weight:300;letter-spacing:-.02em;line-height:1.1;color:var(--text);margin-bottom:52px}
@@ -96,7 +106,7 @@ section.wrap{padding:96px 80px;max-width:1200px;margin:0 auto;scroll-margin-top:
 .about-grid{display:grid;grid-template-columns:1fr 1.65fr;gap:72px;align-items:start}
 .photo-box{position:relative;aspect-ratio:3/4;background:var(--bg3);border-radius:3px;border:1px solid var(--border);overflow:hidden;color:var(--text3)}
 .photo-box img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-.photo-box .photo-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.06))}
+.photo-box .photo-fallback{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.06))}
 .photo-box svg{width:32px;height:32px;opacity:.35}
 .photo-box span{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.15em}
 .about-bio{font-size:16px;line-height:1.8;color:var(--text2);margin-bottom:28px}
@@ -111,17 +121,15 @@ section.wrap{padding:96px 80px;max-width:1200px;margin:0 auto;scroll-margin-top:
 [data-theme="dark"] .tag.hi{background:rgba(0,200,255,.07)}
 
 /* ── TIMELINE ── */
-.tl-wrap{max-width:860px}
 .exp-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px 72px}
 .exp-grid-single{grid-template-columns:1fr;max-width:860px}
+.tl-wrap{max-width:860px}
 .col-head{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:28px;padding-bottom:10px;border-bottom:1px solid var(--border)}
 .tl{position:relative;padding-left:24px}
 .tl::before{content:'';position:absolute;left:0;top:18px;bottom:20px;width:1px;background:var(--border2)}
+.tl:has(.tl-item:only-child)::before{display:none}
 .tl-item{position:relative;margin-bottom:36px}
 .tl-item:last-child{margin-bottom:0}
-/* Hide the connecting line when there's only one item — nothing to connect */
-.tl-item:first-child:last-child ~ *{display:none}
-.tl:has(.tl-item:only-child)::before{display:none}
 .tl-item::before{content:'';position:absolute;left:-28px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--surface);border:2px solid var(--accent);transition:background .2s}
 .tl-item:hover::before{background:var(--accent)}
 .tl-date{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.14em;color:var(--text3);margin-bottom:5px}
@@ -206,63 +214,22 @@ section.wrap{padding:96px 80px;max-width:1200px;margin:0 auto;scroll-margin-top:
 footer{border-top:1px solid var(--border);padding:24px 80px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
 .foot-copy{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.07em;color:var(--text3)}
 
-/* ── MEDIUM SCREENS: shrink nav further ── */
-@media(max-width:1100px){
-  nav{padding:0 24px}
-  .nav-links{gap:14px}
-  .nav-links a{font-size:10.5px}
-}
-
-/* ── HAMBURGER MENU (mobile) ── */
-.nav-hamburger{
-  display:none;flex-direction:column;gap:4.5px;cursor:pointer;
-  background:none;border:none;padding:6px;
-}
-.nav-hamburger span{
-  display:block;width:20px;height:1.5px;
-  background:var(--text);border-radius:2px;
-  transition:all .25s ease;
-}
-.nav-hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
-.nav-hamburger.open span:nth-child(2){opacity:0}
-.nav-hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
-
-.nav-mobile-menu{
-  display:none;
-  position:fixed;top:58px;left:0;right:0;z-index:199;
-  background:var(--nav-bg);
-  border-bottom:1px solid var(--border);
-  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-  padding:16px 20px;
-  flex-direction:column;gap:0;
-}
-.nav-mobile-menu.open{display:flex}
-.nav-mobile-menu a{
-  font-size:13px;letter-spacing:.06em;color:var(--text2);
-  text-decoration:none;padding:11px 0;
-  border-bottom:1px solid var(--border);
-  transition:color .2s;font-weight:400;
-}
-.nav-mobile-menu a:last-child{border-bottom:none}
-.nav-mobile-menu a:hover{color:var(--accent)}
+/* ── MEDIUM SCREENS ── */
+@media(max-width:1100px){nav{padding:0 24px}.nav-links{gap:13px}.nav-links a{font-size:10.5px}}
 
 @keyframes aUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 @keyframes aIn{from{opacity:0}to{opacity:1}}
 
+section.wrap{scroll-margin-top:58px}
+
 @media(max-width:800px){
-  nav{padding:0 20px}
-  .nav-links{display:none}
+  nav{padding:0 20px}.nav-links{display:none}
   .nav-hamburger{display:flex}
-  section.wrap{padding:64px 22px;scroll-margin-top:58px}
-  .hero-content{padding:0 22px}
-  .hero-scroll{left:22px;bottom:24px}
+  section.wrap{padding:64px 22px}
+  .hero-content{padding:0 22px}.hero-scroll{left:22px;bottom:24px}
   .about-grid,.exp-grid,.contact-grid{grid-template-columns:1fr;gap:36px}
-  footer{padding:18px 22px}
-  .proj-grid{grid-template-columns:1fr}
-  .f-row-2{grid-template-columns:1fr}
-  #rb1{right:2%;bottom:10%}
-  #rb1 svg{width:76px}
-  #rb2,#rb3{display:none}
+  footer{padding:18px 22px}.proj-grid{grid-template-columns:1fr}.f-row-2{grid-template-columns:1fr}
+  #rb1{right:2%;bottom:10%}#rb1 svg{width:76px}#rb2,#rb3{display:none}
   .sec-title{margin-bottom:32px}
 }
 </style>
@@ -292,8 +259,6 @@ footer{border-top:1px solid var(--border);padding:24px 80px;display:flex;justify
     </button>
   </div>
 </nav>
-
-<!-- Mobile nav drawer -->
 <div class="nav-mobile-menu" id="mobileMenu">
   <a href="#about" onclick="closeMobile()">About</a>
   <a href="#experience" onclick="closeMobile()">Experience</a>
@@ -571,32 +536,37 @@ footer{border-top:1px solid var(--border);padding:24px 80px;display:flex;justify
   <div class="proj-grid reveal">
     <div class="proj-card">
       <div class="proj-n">001</div>
-      <div class="proj-title">Project Name — One-line tagline</div>
-      <div class="proj-desc">2–3 sentences describing what it does, what problem it solves, and the tech stack used. Mention any interesting results or scale.</div>
-      <div class="chips" style="margin-bottom:16px"><span class="chip">Tech 1</span><span class="chip">Tech 2</span><span class="chip">Tech 3</span></div>
-      <div class="proj-links"><a href="https://github.com/heyitspuru" target="_blank" class="proj-link">↗ GitHub</a></div>
+      <div class="proj-title">AZURE-CLOUD — Azure labs &amp; proof-of-work repository</div>
+      <div class="proj-desc">A hands-on collection of Microsoft Azure labs, notes, and implementations demonstrating core cloud concepts through practical, real-world scenarios. Covers compute, storage, networking, identity/access, databases, and monitoring/security — built as a "proof of work" documenting applied cloud skills.</div>
+      <div class="chips" style="margin-bottom:16px"><span class="chip">Microsoft Azure</span><span class="chip">Azure AD / RBAC</span><span class="chip">Azure Networking &amp; Storage</span></div>
+      <div class="proj-links"><a href="https://github.com/heyitspuru/AZURE-CLOUD" target="_blank" class="proj-link">↗ GitHub</a></div>
     </div>
     <div class="proj-card">
       <div class="proj-n">002</div>
-      <div class="proj-title">Project Name — One-line tagline</div>
-      <div class="proj-desc">2–3 sentences describing what it does, the architecture, and any notable outcomes.</div>
-      <div class="chips" style="margin-bottom:16px"><span class="chip">Tech 1</span><span class="chip">Tech 2</span><span class="chip">Tech 3</span></div>
-      <div class="proj-links"><a href="https://github.com/heyitspuru" target="_blank" class="proj-link">↗ GitHub</a></div>
+      <div class="proj-title">Yapo — Serverless blog app on AWS</div>
+      <div class="proj-desc">A modern serverless blog application with user sign-up/login and the ability to create, view, and comment on posts via a protected authentication flow. Built end-to-end on AWS managed services, with AI features including Text-to-Speech (Polly) and Translation (Translate) baked in.</div>
+      <div class="chips" style="margin-bottom:16px"><span class="chip">AWS Lambda</span><span class="chip">API Gateway</span><span class="chip">DynamoDB + S3</span><span class="chip">AWS Cognito</span></div>
+      <div class="proj-links"><a href="https://github.com/heyitspuru/Yapo" target="_blank" class="proj-link">↗ GitHub</a></div>
     </div>
     <div class="proj-card">
       <div class="proj-n">003</div>
-      <div class="proj-title">Project Name — One-line tagline</div>
-      <div class="proj-desc">2–3 sentences. What does it do? What's the tech? Any cool numbers or results?</div>
-      <div class="chips" style="margin-bottom:16px"><span class="chip">Tech 1</span><span class="chip">Tech 2</span><span class="chip">Tech 3</span></div>
-      <div class="proj-links"><a href="https://github.com/heyitspuru" target="_blank" class="proj-link">↗ GitHub</a></div>
+      <div class="proj-title">BottlelineClassification — Bottle fill-level image classification</div>
+      <div class="proj-desc">A deep-learning computer vision project that classifies bottle images as Underfilled, Overfilled, or Normal to support automated industrial inspection. Trained a custom CNN and MobileNetV2 transfer-learning model, reaching ~98% accuracy vs a ~71% baseline. Published in IEEE.</div>
+      <div class="chips" style="margin-bottom:16px"><span class="chip">Python</span><span class="chip">TensorFlow / Keras</span><span class="chip">MobileNetV2</span><span class="chip">OpenCV</span><span class="chip">Scikit-learn</span></div>
+      <div class="proj-links">
+        <a href="https://github.com/heyitspuru/Bottlelineclassification" target="_blank" class="proj-link">↗ GitHub</a>
+        <a href="https://ieeexplore.ieee.org/document/11346145" target="_blank" class="proj-link">↗ IEEE Paper</a>
+      </div>
     </div>
     <div class="proj-card">
       <div class="proj-n">004</div>
-      <div class="proj-title">Project Name — One-line tagline</div>
-      <div class="proj-desc">2–3 sentences describing the project, motivation, and what makes it interesting technically.</div>
-      <div class="chips" style="margin-bottom:16px"><span class="chip">Tech 1</span><span class="chip">Tech 2</span></div>
-      <div class="proj-links"><a href="https://github.com/heyitspuru" target="_blank" class="proj-link">↗ GitHub</a></div>
+      <div class="proj-title">malware-detection — Static malware classification</div>
+      <div class="proj-desc">A machine-learning system that classifies malware families using static-analysis features extracted from PE files, DLL imports, and API calls. Implements an XGBoost pipeline with feature selection and cross-validation achieving ~93% accuracy, plus a Streamlit demo for interactive predictions.</div>
+      <div class="chips" style="margin-bottom:16px"><span class="chip">Python</span><span class="chip">XGBoost</span><span class="chip">Scikit-learn</span><span class="chip">Streamlit</span></div>
+      <div class="proj-links"><a href="https://github.com/heyitspuru/malware-detection" target="_blank" class="proj-link">↗ GitHub</a></div>
     </div>
+  </div>
+</section>
   </div>
 </section>
 
@@ -610,7 +580,7 @@ footer{border-top:1px solid var(--border);padding:24px 80px;display:flex;justify
     <div class="ach-card">
       <div class="ach-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1l2 4 4.5.7-3.2 3.1.75 4.4L8 11l-4 2.2.75-4.4L1.5 5.7 6 5z"/></svg></div>
       <span class="ach-yr">2025</span>
-      <div class="ach-title">IEEE Research Paper Publication</div>
+      <div class="ach-title"><a href="https://ieeexplore.ieee.org/document/11346145" target="_blank" style="text-decoration:none;color:inherit;">↗ IEEE Research Paper Publication</a></div>
       <div class="ach-desc">"Automated Detection of Bottle Fill Levels Using CNN and MobileNetV2" published in IEEE.</div>
     </div>
     <div class="ach-card">
@@ -624,6 +594,12 @@ footer{border-top:1px solid var(--border);padding:24px 80px;display:flex;justify
       <span class="ach-yr">2025</span>
       <div class="ach-title">Finalist - Datathon by Analytika @ NMIMS</div>
       <div class="ach-desc">Reached the finalist stage in a competitive datathon with a strong analytical and implementation-focused submission.</div>
+    </div>
+    <div class="ach-card">
+      <div class="ach-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1l2 4 4.5.7-3.2 3.1.75 4.4L8 11l-4 2.2.75-4.4L1.5 5.7 6 5z"/></svg></div>
+      <span class="ach-yr">2025</span>
+      <div class="ach-title"><a href="https://ieeexplore.ieee.org/document/11386619" target="_blank" style="text-decoration:none;color:inherit;">↗ IEEE Research Paper Publication</a></div>
+      <div class="ach-desc">"Serverless Deployment of an Ensemble ML Model for Diabetes Prediction" — published at AECE 2025 (IEEE).</div>
     </div>
   </div>
 </section>
@@ -937,21 +913,20 @@ document.getElementById('themeBtn').addEventListener('click', () => applyTheme(!
 ═══════════════════════════════════════════════════ */
 (function () {
   const USER = 'Raj_0106';
+  const BASE = 'https://alfa-leetcode-api.onrender.com';
 
-  /* Submission grid — generated locally (realistic pattern) */
   function buildGrid(submissionsPerDay) {
     const grid = document.getElementById('lcGrid');
     if (!grid) return;
     grid.innerHTML = '';
-    /* submissionsPerDay is an object keyed by timestamp if available, else use fallback */
     for (let w = 0; w < 53; w++) {
       for (let d = 0; d < 7; d++) {
         const cell = document.createElement('div');
         cell.className = 'lc-cell';
-        /* Use real data if available, else simulate with recency weighting */
         let v = 0;
-        if (submissionsPerDay && Array.isArray(submissionsPerDay) && submissionsPerDay[w * 7 + d] !== undefined) {
-          v = Math.min(submissionsPerDay[w * 7 + d] / 10, 1);
+        if (submissionsPerDay && Array.isArray(submissionsPerDay)) {
+          const cnt = submissionsPerDay[w * 7 + d] || 0;
+          v = Math.min(cnt / 8, 1);
         } else {
           const recency = w / 52;
           v = Math.random() * recency * .72 + (Math.random() > .62 ? Math.random() * .44 : 0);
@@ -970,53 +945,9 @@ document.getElementById('themeBtn').addEventListener('click', () => applyTheme(!
     if (el && val !== undefined && val !== null) el.textContent = val;
   }
 
-  async function fetchLC() {
-    /* Primary API */
-    const APIS = [
-      `https://alfa-leetcode-api.onrender.com/${USER}`,
-      `https://leetcode-stats-api.herokuapp.com/${USER}`,
-    ];
-
-    for (const url of APIS) {
-      try {
-        const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
-        if (!res.ok) continue;
-        const d = await res.json();
-
-        /* alfa-leetcode-api shape */
-        if (d.totalSolved !== undefined) {
-          setEl('lc-total', d.totalSolved);
-          setEl('lc-total-stat', d.totalSolved);
-          setEl('lc-easy',  d.easySolved  ?? d.totalEasy);
-          setEl('lc-med',   d.mediumSolved ?? d.totalMedium);
-          setEl('lc-hard',  d.hardSolved  ?? d.totalHard);
-          if (d.ranking) setEl('lc-ranking', '#' + Number(d.ranking).toLocaleString());
-          setEl('lc-rank-display', d.ranking ? `Global Rank #${Number(d.ranking).toLocaleString()}` : 'leetcode.com/u/Raj_0106');
-          buildGrid(d.submissionCalendar ? processCalendar(d.submissionCalendar) : null);
-          return;
-        }
-        /* leetcode-stats-api shape */
-        if (d.totalSolved !== undefined || d.totalQuestions !== undefined) {
-          setEl('lc-total', d.totalSolved);
-          setEl('lc-total-stat', d.totalSolved);
-          setEl('lc-easy',  d.easySolved);
-          setEl('lc-med',   d.mediumSolved);
-          setEl('lc-hard',  d.hardSolved);
-          setEl('lc-ranking', d.ranking ? '#' + Number(d.ranking).toLocaleString() : '—');
-          setEl('lc-rank-display', 'leetcode.com/u/Raj_0106');
-          buildGrid(null);
-          return;
-        }
-      } catch (_) { /* try next */ }
-    }
-
-    /* All APIs failed — use realistic placeholder */
-    setEl('lc-rank-display', 'leetcode.com/u/Raj_0106');
-    buildGrid(null);
-  }
-
-  function processCalendar(cal) {
-    /* cal is an object: { "timestamp": count } — map to 371-length array (53×7) */
+  function processCalendar(calRaw) {
+    let cal = calRaw;
+    if (typeof cal === 'string') { try { cal = JSON.parse(cal); } catch (_) { return null; } }
     const now = Math.floor(Date.now() / 1000);
     const startTs = now - 52 * 7 * 86400;
     const arr = new Array(371).fill(0);
@@ -1025,6 +956,59 @@ document.getElementById('themeBtn').addEventListener('click', () => applyTheme(!
       if (diff >= 0 && diff < 371) arr[diff] = Number(cnt);
     });
     return arr;
+  }
+
+  async function safeFetch(url, timeout = 8000) {
+    const res = await fetch(url, { signal: AbortSignal.timeout(timeout) });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  }
+
+  async function fetchLC() {
+    try {
+      const [solved, calData] = await Promise.allSettled([
+        safeFetch(`${BASE}/${USER}/solved`),
+        safeFetch(`${BASE}/${USER}/calendar`),
+      ]);
+
+      if (solved.status === 'fulfilled') {
+        const s = solved.value;
+        const total  = s.solvedProblem  ?? s.totalSolved  ?? null;
+        const easy   = s.easySolved   ?? null;
+        const medium = s.mediumSolved ?? null;
+        const hard   = s.hardSolved   ?? null;
+        if (total !== null) {
+          setEl('lc-total', total);
+          setEl('lc-total-stat', total);
+          setEl('lc-easy',  easy);
+          setEl('lc-med',   medium);
+          setEl('lc-hard',  hard);
+        }
+      }
+
+      if (calData.status === 'fulfilled') {
+        const c = calData.value;
+        if (c.streak) setEl('lc-rank-display', `🔥 ${c.streak}-day streak · leetcode.com/u/${USER}`);
+        buildGrid(c.submissionCalendar ? processCalendar(c.submissionCalendar) : null);
+      } else {
+        buildGrid(null);
+      }
+
+      /* ranking — non-blocking */
+      safeFetch(`${BASE}/${USER}`).then(p => {
+        if (p.ranking) {
+          setEl('lc-ranking', '#' + Number(p.ranking).toLocaleString());
+          const rd = document.getElementById('lc-rank-display');
+          if (rd && !rd.textContent.includes('streak'))
+            rd.textContent = `Global Rank #${Number(p.ranking).toLocaleString()}`;
+        }
+      }).catch(() => {});
+
+    } catch (err) {
+      console.warn('LeetCode API unavailable:', err);
+      setEl('lc-rank-display', 'leetcode.com/u/Raj_0106');
+      buildGrid(null);
+    }
   }
 
   fetchLC();
@@ -1070,7 +1054,7 @@ const revObs = new IntersectionObserver(entries => {
 document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
 
 /* ═══════════════════════════════════════════════════
-   ACTIVE NAV — lower threshold works better with 8 short sections
+   ACTIVE NAV
 ═══════════════════════════════════════════════════ */
 const navAs = document.querySelectorAll('.nav-links a');
 const secObs = new IntersectionObserver(entries => {
