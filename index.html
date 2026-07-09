@@ -313,6 +313,8 @@
       position: relative;
       width: 100%;
       height: 100vh;
+      /* svh ignores the mobile URL bar, so hiding it mid-scroll can't reflow the page */
+      height: 100svh;
       min-height: 640px;
       overflow: hidden
     }
@@ -1991,6 +1993,18 @@
       scroll-behavior: auto !important
     }
 
+    /* Lenis only runs on pointer devices; everywhere else the browser eases anchors
+       natively. Scoped to :not(.lenis) so it can never fight lenis.scrollTo(). */
+    @media (prefers-reduced-motion: no-preference) {
+      html:not(.lenis) {
+        scroll-behavior: smooth
+      }
+    }
+
+    section[id] {
+      scroll-margin-top: 70px
+    }
+
     /* Horizontal Missions strip (desktop, motion-ok only) */
     body.missions-h .band-missions {
       overflow: hidden
@@ -2090,8 +2104,14 @@
 
     /* ── RESPONSIVE ── */
     @media(max-width:800px) {
+
+      /* The sky canvas repaints every frame, so a blurred backdrop over it is
+         re-blurred every frame. --nav-bg is ~93% opaque; drop the blur instead. */
       nav {
-        padding: 0 20px
+        padding: 0 20px;
+        background: var(--bg);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none
       }
 
       .nav-links {
@@ -2980,6 +3000,9 @@
     const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const FINE_POINTER = matchMedia('(pointer: fine)').matches;
     const SMALL = matchMedia('(max-width: 800px)').matches;
+    /* Smooth-scroll + pinning are main-thread work. Touch scrolling runs on the
+       compositor thread until something forces it off — so keep it off touch. */
+    const CINEMA = FINE_POINTER && !SMALL && !REDUCED;
     const ROOT = document.documentElement;
     const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
     const sstep = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
@@ -3011,15 +3034,17 @@
        day → dusk → night. Click the sun/moon to flip theme.
     ═══════════════════════════════════════════════════ */
     const SKY = (function () {
-      const stub = { setTheme() { } };
+      const stub = { setTheme() { }, measure() { } };
       if (REDUCED || !window.THREE) { document.body.classList.add('no-sky'); return stub; }
       const canvas = document.getElementById('sky-canvas');
       let renderer;
       try {
-        renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+        /* The sky is a soft gradient with no hard edges, so MSAA buys nothing
+           visually while costing real fill rate on a full-viewport shader. */
+        renderer = new THREE.WebGLRenderer({ canvas, antialias: !SMALL, alpha: false });
       } catch (e) { document.body.classList.add('no-sky'); return stub; }
 
-      renderer.setPixelRatio(Math.min(devicePixelRatio, SMALL ? 1.5 : 2));
+      renderer.setPixelRatio(Math.min(devicePixelRatio, SMALL ? 1.25 : 2));
       renderer.setSize(innerWidth, innerHeight);
       const camera = new THREE.PerspectiveCamera(58, innerWidth / innerHeight, 0.1, 1000);
       camera.position.z = 32;
@@ -3029,6 +3054,10 @@
       let mx = 0, my = 0, cx = 0, cy = 0;      /* cursor parallax */
       let scrollP = 0, p = DARK ? 1 : 0;       /* eased altitude progress */
       let dark = DARK;
+      /* scrollHeight is layout-dependent — reading it per scroll event forces a
+         synchronous reflow. It only changes on resize/refresh, so cache it. */
+      let maxScroll = 1;
+      const measure = () => { maxScroll = Math.max(1, document.documentElement.scrollHeight - innerHeight); };
 
       /* Sky dome: three gradient stops blended day → dusk → night by uP */
       const skyMat = new THREE.ShaderMaterial({
@@ -3138,7 +3167,7 @@
 
       const starGeo = new THREE.BufferGeometry();
       const pos = [];
-      for (let i = 0; i < 900; i++) {
+      for (let i = 0, STARS = SMALL ? 450 : 900; i < STARS; i++) {
         const theta = Math.random() * Math.PI * 2;
         const phi = Math.acos(1 - Math.random() * .96);
         const r = 360 + Math.random() * 40;
@@ -3153,10 +3182,17 @@
         return dark ? .62 + scrollP * .38 : scrollP * .92;
       }
 
+      /* Altitude only moves while scrolling or mid theme-flip. When it has settled,
+         re-uploading the same tint/opacity to 40+ materials every frame is pure waste. */
+      let settleFrames = 3;
+
       function tick() {
         raf = requestAnimationFrame(tick);
         t += .016;
-        p += (targetP() - p) * .05;
+        scrollP = clamp(scrollY / maxScroll, 0, 1);
+        const tp = targetP();
+        const moving = Math.abs(tp - p) > 1e-4 || settleFrames-- > 0;
+        p += (tp - p) * .05;
         skyMat.uniforms.uT.value = t;
         skyMat.uniforms.uP.value = p;
 
@@ -3167,27 +3203,32 @@
         camera.lookAt(0, 0, 0);
 
         const sunVis = 1 - sstep(.38, .62, p);
-        sun.position.y = 12 - p * 30;
-        sun.material.opacity = sunVis;
+        if (moving) {
+          sun.position.y = 12 - p * 30;
+          sun.material.opacity = sunVis;
+          moon.position.y = -16 + sstep(.45, .9, p) * 30;
+          moon.material.opacity = sstep(.5, .78, p) * .95;
+          stars.material.opacity = sstep(.55, .85, p) * .88;
+          cloudTint.copy(TINT_DAY).lerp(TINT_NIGHT, p);
+        }
         rays.forEach((r, i) => {
           r.position.y = sun.position.y + r.userData.oy;
           r.material.opacity = (.15 + Math.sin(t * .7 + i * .38) * .08) * sunVis;
         });
-        moon.position.y = -16 + sstep(.45, .9, p) * 30;
-        moon.material.opacity = sstep(.5, .78, p) * .95;
-        stars.material.opacity = sstep(.55, .85, p) * .88;
         stars.rotation.y = t * .0022;
 
-        cloudTint.copy(TINT_DAY).lerp(TINT_NIGHT, p);
         clouds.forEach(o => {
-          o.m.material.color.copy(cloudTint);
-          o.m.material.opacity = o.baseOp * (1 - .38 * p);
+          if (moving) {
+            o.m.material.color.copy(cloudTint);
+            o.m.material.opacity = o.baseOp * (1 - .38 * p);
+          }
           o.m.position.x -= o.spd;
           if (o.m.position.x < -74) { o.m.position.x = 74 + Math.random() * 10; o.m.position.y = o.baseY + (Math.random() - .5) * 5; }
           o.m.position.y = o.baseY + Math.sin(t * o.freq + o.ph) * o.amp;
         });
         renderer.render(scene, camera);
       }
+      measure();
       tick();
 
       /* Pause when the tab is hidden */
@@ -3200,14 +3241,20 @@
         mx = (e.clientX / innerWidth - .5) * 2;
         my = (e.clientY / innerHeight - .5) * -2;
       });
-      window.addEventListener('scroll', () => {
-        const max = document.documentElement.scrollHeight - innerHeight;
-        scrollP = max > 0 ? clamp(scrollY / max, 0, 1) : 0;
-      }, { passive: true });
+      /* No scroll listener: tick() already runs every frame and reads scrollY,
+         which is far cheaper than a scroll handler that flushes layout. */
+
+      /* Mobile URL bars collapse mid-gesture and fire resize. Reallocating the WebGL
+         drawing buffer there hitches the scroll, so only rebuild on a real width
+         change or a height jump too large to be the address bar. */
+      let lastW = innerWidth, lastH = innerHeight;
       window.addEventListener('resize', () => {
+        if (innerWidth === lastW && Math.abs(innerHeight - lastH) < 120) { measure(); return; }
+        lastW = innerWidth; lastH = innerHeight;
         renderer.setSize(innerWidth, innerHeight);
         camera.aspect = innerWidth / innerHeight;
         camera.updateProjectionMatrix();
+        measure();
       });
 
       /* Click the sun / moon → toggle theme */
@@ -3232,7 +3279,8 @@
       }
 
       return {
-        setTheme(d) { dark = d; }
+        setTheme(d) { dark = d; },
+        measure
       };
     })();
 
@@ -3761,15 +3809,20 @@
     /* ═══════════════════════════════════════════════════
        SCROLL CINEMA — Lenis inertia scroll + ScrollTrigger
        (pinned hero exit, horizontal missions, altitude HUD,
-       scrubbed chapter titles). All skipped on reduced motion.
+       scrubbed chapter titles).
+
+       Pointer devices only. Lenis 1.x registers a NON-PASSIVE touchmove listener
+       on window no matter how syncTouch is set, which drags touch scrolling off
+       the compositor onto the main thread — where it then queues behind the WebGL
+       frame. It never smooths touch either, so on phones it is all cost, no benefit.
+       Skipped entirely on reduced motion.
     ═══════════════════════════════════════════════════ */
     (function () {
       if (REDUCED) return;
-      const DESKTOP = innerWidth > 800;
 
       /* — A. Lenis smooth scroll — */
       let lenis = null;
-      if (window.Lenis) {
+      if (window.Lenis && CINEMA) {
         lenis = new Lenis({ lerp: .09, wheelMultiplier: 1 });
         (function raf(time) { lenis.raf(time); requestAnimationFrame(raf); })(performance.now());
         /* anchors ride the smooth scroll (native jump is disabled by .lenis-smooth) */
@@ -3783,13 +3836,22 @@
           });
         });
       }
+      /* Without Lenis, anchors fall back to CSS scroll-behavior + scroll-margin-top. */
 
       if (!(window.gsap && window.ScrollTrigger)) return;
       gsap.registerPlugin(ScrollTrigger);
+      /* A collapsing mobile URL bar is not a layout change worth re-measuring pins for */
+      ScrollTrigger.config({ ignoreMobileResize: true });
+      /* pin-spacers change document height, which is what the sky reads as altitude */
+      ScrollTrigger.addEventListener('refresh', () => SKY.measure());
       if (lenis) { lenis.on('scroll', ScrollTrigger.update); gsap.ticker.lagSmoothing(0); }
 
-      /* — B. Pinned hero exit: name parallaxes up, robots scatter — */
-      if (DESKTOP) {
+      /* Pins, scrubs and the HUD are desktop-pointer only. matchMedia tears them
+         back down — tweens, triggers, pin-spacers — if the viewport crosses the
+         breakpoint, instead of leaving a half-applied horizontal strip behind. */
+      gsap.matchMedia().add('(min-width: 801px) and (pointer: fine)', () => {
+
+        /* — B. Pinned hero exit: name parallaxes up, robots scatter — */
         gsap.timeline({
           scrollTrigger: { trigger: '#hero', start: 'top top', end: '+=55%', scrub: true, pin: true, anticipatePin: 1 }
         })
@@ -3798,10 +3860,8 @@
           .to('#rb2 svg', { x: -260, y: -200, rotate: -20, opacity: 0, ease: 'none' }, 0)
           .to('#rb3 svg', { x: 150, y: -360, rotate: 26, opacity: 0, ease: 'none' }, 0)
           .to('.hero-scroll, .hero-hint', { opacity: 0, ease: 'none' }, 0);
-      }
 
-      /* — C. Horizontal Missions strip: cards pan sideways as you scroll — */
-      if (DESKTOP) {
+        /* — C. Horizontal Missions strip: cards pan sideways as you scroll — */
         const grid = document.getElementById('projGrid');
         const band = document.querySelector('.band-missions');
         document.body.classList.add('missions-h');
@@ -3820,20 +3880,21 @@
             invalidateOnRefresh: true
           }
         });
-      }
 
-      /* — E. Chapter titles slide in with scroll progress — */
-      document.querySelectorAll('.sec-title').forEach(el => {
-        el.classList.remove('reveal');
-        el.style.opacity = 1;
-        gsap.fromTo(el, { x: 90 }, {
-          x: 0, ease: 'none',
-          scrollTrigger: { trigger: el, start: 'top 96%', end: 'top 45%', scrub: true }
+        /* — E. Chapter titles slide in with scroll progress —
+           (.reveal is dropped so its CSS transition can't smear against the scrub;
+           revObs still adds .in, which is what raises the split words) */
+        const titles = [...document.querySelectorAll('.sec-title')];
+        titles.forEach(el => {
+          el.classList.remove('reveal');
+          el.style.opacity = 1;
+          gsap.fromTo(el, { x: 90 }, {
+            x: 0, ease: 'none',
+            scrollTrigger: { trigger: el, start: 'top 96%', end: 'top 45%', scrub: true }
+          });
         });
-      });
 
-      /* — D. Altitude HUD gauge — */
-      if (DESKTOP) {
+        /* — D. Altitude HUD gauge — */
         const hud = document.createElement('div');
         hud.className = 'alt-hud';
         hud.setAttribute('aria-hidden', 'true');
@@ -3847,19 +3908,24 @@
         const fill = hud.querySelector('#altFill');
         const plane = hud.querySelector('#altPlane');
         const read = hud.querySelector('#altRead');
+        const stop = new AbortController();
 
+        /* scrollHeight only moves on resize/refresh — reading it per frame reflows */
+        let hudMax = 1;
+        const hudMeasure = () => { hudMax = Math.max(1, document.documentElement.scrollHeight - innerHeight); };
         let hudPending = false;
         function hudUpdate() {
           hudPending = false;
-          const max = document.documentElement.scrollHeight - innerHeight;
-          const p = max > 0 ? clamp(scrollY / max, 0, 1) : 0;
+          const p = clamp(scrollY / hudMax, 0, 1);
           fill.style.height = (p * 100).toFixed(2) + '%';
           plane.style.top = (p * 100).toFixed(2) + '%';
         }
-        window.addEventListener('scroll', () => {
+        addEventListener('scroll', () => {
           if (!hudPending) { hudPending = true; requestAnimationFrame(hudUpdate); }
-        }, { passive: true });
-        hudUpdate();
+        }, { passive: true, signal: stop.signal });
+        addEventListener('resize', hudMeasure, { passive: true, signal: stop.signal });
+        ScrollTrigger.addEventListener('refresh', hudMeasure);
+        hudMeasure(); hudUpdate();
 
         const ALT_LABELS = {
           hero: 'ALT 00 · RUNWAY', pilot: 'ALT 01 · THE PILOT', flightlog: 'ALT 02 · FLIGHT LOG',
@@ -3871,10 +3937,21 @@
           });
         }, { threshold: .25 });
         document.querySelectorAll('section[id]').forEach(s => hudObs.observe(s));
-      }
+
+        /* Crossing back under the breakpoint: undo everything gsap can't undo itself */
+        return () => {
+          stop.abort();
+          ScrollTrigger.removeEventListener('refresh', hudMeasure);
+          hudObs.disconnect();
+          hud.remove();
+          document.body.classList.remove('missions-h');
+          titles.forEach(el => { el.style.removeProperty('opacity'); el.classList.add('in'); });
+          SKY.measure();
+        };
+      });
 
       /* Layout settles (fonts, pin-spacers) → recalc trigger positions */
-      window.addEventListener('load', () => ScrollTrigger.refresh());
+      window.addEventListener('load', () => { ScrollTrigger.refresh(); SKY.measure(); });
     })();
 
     /* Footer year */
